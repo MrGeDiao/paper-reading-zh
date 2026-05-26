@@ -1,0 +1,48 @@
+name: Paper misread / evidence boundary
+description: 报告读错论文、编造外部事实、图表幻觉或实验数字无锚点
+title: "[Paper Misread] "
+labels: [paper-misread]
+body:
+  - type: textarea
+    id: paper
+    attributes:
+      label: 论文锚点
+      description: 公开链接、标题、arXiv/OpenReview/ACM/IEEE 页面均可。不要上传无授权 PDF。
+      placeholder: "标题或公开链接"
+    validations:
+      required: true
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: 问题类型
+      options:
+        - 读错论文候选
+        - venue / 年份 / CCF / 代码链接未核验却写成事实
+        - 图表或公式不可读时编造细节
+        - 实验数字没有 Table / Figure / 段落锚点
+        - 跨论文比较口径未标注
+        - 摘要-only 场景没有说明材料范围
+        - 其他证据边界问题
+    validations:
+      required: true
+  - type: textarea
+    id: bad_output
+    attributes:
+      label: 有问题的输出片段
+      description: 贴最小片段即可。请删掉个人信息和私有材料。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+      placeholder: "例如：应写未核验；应说明只能读到摘要；应锚定到 Table 2。"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: 使用入口和上下文
+      placeholder: "Codex / Claude Project / ChatGPT Project；是否上传 PDF；是否联网。"
+    validations:
+      required: false

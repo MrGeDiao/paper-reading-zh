@@ -1,0 +1,46 @@
+name: Bug report
+description: 报告安装、触发、文档或 prompt 同步问题
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题描述
+      description: 发生了什么？请尽量贴出最小复现步骤。
+      placeholder: "例如：Codex 没有触发 skill；Claude Project prompt 和 Agent Skill 行为不一致。"
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: 使用入口
+      options:
+        - Codex Agent Skill
+        - Claude Code Agent Skill
+        - Claude Project prompt
+        - ChatGPT Project prompt
+        - Custom GPT
+        - Hermes / OpenClaw compatible runtime
+        - Documentation only
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 安装或粘贴了哪个文件
+        2. 输入了什么论文锚点和问题
+        3. 实际输出是什么
+        4. 你期望是什么
+    validations:
+      required: true
+  - type: textarea
+    id: version
+    attributes:
+      label: 版本和环境
+      description: 版本号、commit、运行时名称即可。不要贴 token、cookie 或私有路径。
+      placeholder: "v0.1.1 / commit SHA / Codex version / Claude Code version"
+    validations:
+      required: false
