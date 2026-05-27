@@ -81,7 +81,7 @@ prompts/claude-project.md
 prompts/chatgpt-project.md
 ```
 
-私有开发仓可以保留 `tasks/` 过程稿。未来如果转公开，不建议直接把私有仓改成 public；更稳妥的做法是创建干净公开仓，或使用 orphan public 分支，只发布公开文件，不带 `tasks/` 的 git 历史。
+工作记录、草稿和本地验证材料不属于公开发布面。未来如果从长期开发仓发布公开版本，不建议直接把完整开发历史改成 public；更稳妥的做法是创建干净公开仓，或使用 orphan public 分支，只发布上面的公开文件。
 
 ## Modes
 

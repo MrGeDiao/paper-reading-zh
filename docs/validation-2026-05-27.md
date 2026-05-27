@@ -4,7 +4,7 @@
 
 ## Material
 
-- Local test file: `202605.00224v1.pdf` (local copy used for validation; not committed to this repository)
+- Validation source: local PDF copy of `A Time Scaling Theory for Multi-Layer Electronic Systems` (not committed to this repository)
 - Pages: 16
 - Title from PDF text: `A Time Scaling Theory for Multi-Layer Electronic Systems`
 - Author / affiliation from PDF text: Tingbo He / Huawei

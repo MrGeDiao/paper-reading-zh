@@ -15,7 +15,7 @@
 
 ## Public Release Note
 
-公开发布时建议使用干净公开仓或 orphan public branch，不直接把当前包含 `tasks/` 历史的私有开发仓改成 public。
+公开发布时建议使用干净公开仓或 orphan public branch，不直接把包含工作记录、草稿或本地验证材料的完整开发历史改成 public。
 
 建议 tag：`v0.1.1`
 
