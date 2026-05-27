@@ -3,7 +3,7 @@
 给 AI 加一套论文阅读的证据规则：未核验的不补，读不到的不编，比较前先对口径。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.1.1-green.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.1.2-green.svg)](./CHANGELOG.md)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![LINUX DO](https://img.shields.io/badge/LINUX%20DO-Community-blue.svg)](https://linux.do)
 
@@ -150,7 +150,7 @@ Hermes 和 OpenClaw 需要保留完整目录结构（包含 `references/modes.md
 
 ## 项目状态
 
-当前版本：`v0.1.1`
+当前版本：`v0.1.2`
 
 已有能力：
 
@@ -171,6 +171,7 @@ Hermes 和 OpenClaw 需要保留完整目录结构（包含 `references/modes.md
 - 尚未覆盖每个平台的完整端到端回归测试。
 - Web 版不能调用本地工具；外部事实核验取决于当前平台是否可联网。
 - PDF 图表读取能力由平台和模型决定；读不到时退化为基于文本、caption 或用户截图的解释。
+- Markdown 数学渲染由客户端决定；部分客户端对行内 `$...$` 的渲染可能不稳定，规则会优先使用行内 `\(...\)` 或普通符号/中文术语兜底。
 - 公式-代码对齐只在用户提供代码时启用，不默认 clone 或分析代码仓库。
 - 这个项目不是文献管理器，也不默认生成 PPT、BibTeX 或全文翻译。
 
@@ -189,6 +190,7 @@ paper-reading-zh/
 ├── SECURITY.md
 ├── docs/
 │   ├── release-v0.1.1.md
+│   ├── release-v0.1.2.md
 │   └── validation-2026-05-27.md
 ├── paper-reading-zh/
 │   ├── SKILL.md

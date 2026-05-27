@@ -70,6 +70,7 @@ CHANGELOG.md
 CONTRIBUTING.md
 SECURITY.md
 docs/release-v0.1.1.md
+docs/release-v0.1.2.md
 docs/validation-2026-05-27.md
 .github/ISSUE_TEMPLATE/bug_report.yml
 .github/ISSUE_TEMPLATE/paper_misread.yml
@@ -190,12 +191,13 @@ v0.1 包含以下规则增强，已落到 `SKILL.md`、`references/modes.md` 和
 
 ## Validation Status
 
-v0.1.1 当前状态：
+v0.1.2 当前状态：
 
 - Skill 文件格式已通过 `quick_validate.py`。
 - 已做结构性前向检查：深读、工程拆解、按图表顺序、摘要兜底、无可信材料退出、防编造规则。
 - Web prompts 已完成 Claude Code 评审，并与 Agent Skill 规则做过漂移检查。
 - 已用一篇真实 16 页 PDF 完成文本层最小验证，覆盖材料范围、观点 / 路线图论文变体、数字锚点、公式抽取乱码边界和未核验外部事实标签；记录见 `docs/validation-2026-05-27.md`。
+- v0.1.2 仅调整数学表达默认写法，未引入新的阅读模式或证据规则变更，不需要额外端到端验证。
 - 尚未完成 Claude Project、ChatGPT Project、Codex、Claude Code 四个平台的完整端到端回归测试。
 
 因此公开文案只写“Primary”或“Compatible”，不写“fully tested across all platforms”。
