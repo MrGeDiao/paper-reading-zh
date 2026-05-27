@@ -5,6 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Version](https://img.shields.io/badge/version-v0.1.1-green.svg)](./CHANGELOG.md)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+[![LINUX DO](https://img.shields.io/badge/LINUX%20DO-Community-blue.svg)](https://linux.do)
+
+本项目认可并感谢 [LINUX DO](https://linux.do) 社区。
 
 `paper-reading-zh` 是一个中文论文精读规则包，面向 Codex、Claude Code、Claude Project 和 ChatGPT Project。它不是论文翻译器，也不是文献管理器；它的目标是让 AI 读论文时少一点顺滑猜测，多一点可复查的证据标注。
 
