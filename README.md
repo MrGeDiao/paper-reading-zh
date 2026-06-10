@@ -7,25 +7,56 @@
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![LINUX DO](https://img.shields.io/badge/LINUX%20DO-Community-blue.svg)](https://linux.do)
 
-本项目认可并感谢 [LINUX DO](https://linux.do) 社区。
+An evidence-rule pack for AI-assisted paper reading. Docs and outputs are in Chinese by design.
 
 `paper-reading-zh` 是一个中文论文精读规则包，面向 Codex、Claude Code、Claude Project 和 ChatGPT Project。它不是论文翻译器，也不是文献管理器；它的目标是让 AI 读论文时少一点顺滑猜测，多一点可复查的证据标注。
 
 - **证据边界**：venue、年份、CCF、代码链接未核验就写“未核验”；实验数字必须锚定原文 Table / Figure 或具体段落。
 - **防顺滑编造**：公式抽取乱码不硬补，图表读不到不描述，只能读到摘要时明确写“仅基于摘要”。
-- **跨论文口径审计**：比较多篇论文前检查数据集、指标定义、模型规模、训练预算和测试 setting。
-- **双入口复用**：同一套规则同时适配 Agent Skill 和 Web Prompt Kit，覆盖 CLI / Agent 环境与网页端项目。
+- **跨论文口径审计**：比较多篇论文前先检查数据集、指标定义、模型规模、训练预算和测试 setting。
+- **双入口复用**：同一套规则同时提供 Agent Skill（CLI / Agent 环境）和 Web Prompt Kit（网页端项目）。
+
+## 和直接把论文丢给 AI 的区别
+
+经常用 AI 读论文的人大多见过这些行为：查不到 venue 就补一个像样的，只读到摘要却写出全文精读，两篇论文口径不同也直接判胜负。这套规则把它们逐条挡住：
+
+| 场景 | 无规则的典型行为 | 本规则下的输出 |
+|---|---|---|
+| venue / 代码链接查不到 | 凭印象补一个 | 写“未核验”；找过没找到写“未找到” |
+| 只能读到摘要 | 当作读完整篇开始精读 | 写“仅基于摘要”，先问是否继续轻量解读 |
+| 引用实验数字 | 复述时丢失出处 | 锚定到原文 Table / Figure 或段落，定位不到就不写 |
+| 公式抽取乱码 | 凭记忆重构公式 | 说明 PDF 抽取异常，只解释上下文可确认的含义 |
+| 多篇论文比较 | 按分数直接排名 | 先对数据集 / 指标 / 规模口径，不可比就标注“口径不完全可比” |
+
+左列是常见失败模式的示意，不是对某个具体产品的实测记录；右列是规则的硬性要求。
+
+## 输出长什么样
+
+默认输出是约 2000 到 3500 中文字的中等深读，骨架固定：关键词（不超过 5 个）、一段话总结（不超过 150 字）、论文基本信息（标题 / venue/年份 / 链接 / 任务领域 4 项）、核心问题与贡献、方法深度解析、实验与结果、批判性讨论。
+
+证据标注落在输出里是这样的（依据一篇真实验证过的 16 页路线图论文改写的示意节选，完整记录见 [docs/validation-2026-05-27.md](./docs/validation-2026-05-27.md)）：
+
+```text
+论文基本信息：
+- 标题：A Time Scaling Theory for Multi-Layer Electronic Systems
+- venue/年份：未核验
+- 链接：未找到
+- 任务领域：多层电子系统的时间缩放理论（产业路线图）
+
+……
+- LogicFolding 在固定工艺节点带来 55% 密度提升、41% 能效提升（摘要 / page 1，论文内部声明）
+- 2026 到 2035 年硬件集成增长预计大于 100 倍（page 1 / Sidebar B，作者预测）
+- 第 4-5 页公式 PDF 抽取乱码：不基于乱码重构公式，只解释上下文可确认的含义
+```
 
 ## 适合谁
 
-适合有 CS / AI / ML 基础，需要快速进入不熟悉方向的读者：
+适合有 CS / AI / ML 基础、需要快速进入不熟悉方向的读者：
 
 - 准备组会，需要把一篇论文讲清楚。
 - 想从工程复现角度判断方法能不能落地。
 - 要比较多篇论文，但不想把不同数据集、指标和模型规模混成一个结论。
 - 经常用 AI 读论文，希望输出少一点猜测，多一点材料范围和证据标签。
-
-非 CS 论文也可以读。规则会保留材料范围和证据边界，但不会强行输出 CCF 等级或工程复现建议。
 
 ## 平台支持
 
@@ -39,7 +70,7 @@
 | Hermes Agent | AgentSkills-compatible 运行时 | Compatible, not first-regression-tested |
 | OpenClaw | AgentSkills-compatible 运行时 | Compatible, not first-regression-tested |
 
-完整兼容矩阵和升级条件见 [DESIGN.md](./DESIGN.md#agent-compatibility)。
+Primary = 第一优先维护和验证的平台；Compatible = 按规则形态预期可用，但尚未完成首轮完整回归测试。完整兼容矩阵和升级条件见 [DESIGN.md](./DESIGN.md#agent-compatibility)。
 
 ## 快速开始
 
@@ -59,16 +90,16 @@
 3. 上传论文 PDF，或粘贴论文链接 / 标题 / 摘要。
 4. 提问：`精读这篇论文`、`比较这几篇论文`、`讲给组会新人听`。
 
-Web 版的 PDF 图表读取能力由平台和模型决定；联网核验取决于当前平台是否有 web/search 能力。读不到时，规则要求先说明限制，再基于可读文本回答。
+Web 版的 PDF 图表读取和联网核验能力由平台决定，详见[已知限制](#已知限制)；读不到时，规则要求先说明限制，再基于可读文本回答。
 
 ### Agent Skill 安装
-
-从 GitHub clone 后安装：
 
 ```bash
 git clone https://github.com/MrGeDiao/paper-reading-zh.git
 cd paper-reading-zh
 ```
+
+下面拷贝的是仓库内的 `paper-reading-zh/` 子目录（skill 本体），不是仓库根目录。
 
 **Codex**
 
@@ -84,7 +115,9 @@ mkdir -p "$HOME/.claude/skills"
 cp -R paper-reading-zh "$HOME/.claude/skills/"
 ```
 
-重启会话后，当你提供论文锚点并表达深读意图时自动触发。
+重启会话后试一句 `精读这篇论文：https://arxiv.org/abs/xxxx.xxxxx`。提供论文锚点（链接 / PDF / 标题）并表达深读意图时自动触发。
+
+升级到新版本时，先删除 skills 目录下旧的 `paper-reading-zh/` 再重新拷贝；对已存在的目标目录直接 `cp -R` 不会覆盖旧版，只会嵌套出冗余的 `paper-reading-zh/paper-reading-zh/`。
 
 <details>
 <summary>Hermes Agent / OpenClaw 安装</summary>
@@ -109,102 +142,58 @@ Hermes 和 OpenClaw 需要保留完整目录结构（包含 `references/modes.md
 
 ## 阅读模式
 
-| 模式 | 适合的问题 | 输出重点 |
+| 模式 | 适合的问题 | 示例提问 |
 |---|---|---|
-| 深读模式 | 单篇论文精读 / 讲解 | 问题、贡献、方法机制、实验和局限 |
-| 工程拆解模式 | 实现、复现、工程接入 | 数据流、模块职责、缺失细节、工程风险 |
-| 调研比较模式 | 多篇论文比较、调研 | 任务假设、方法路线、证据强度、适用边界 |
+| 深读模式 | 单篇论文精读 / 讲解 | `精读这篇论文` |
+| 工程拆解模式 | 实现、复现、工程接入 | `从工程复现角度拆一下` |
+| 调研比较模式 | 多篇论文比较、调研 | `比较这几篇论文` |
 
-可叠加子开关：
+模式由提问意图自动判断，不确定时默认深读，不需要背命令；也可以直接点名模式。两个子开关在提问里追加即可叠加：
 
-- **组会 / 技术博客风格**：加强“问题 -> 方法 -> 验证 -> 局限”的叙事链条。
-- **按图表顺序组织**：按 Figure / Table / Equation / Algorithm 的出现顺序推进。
+- **组会 / 技术博客风格**（如 `讲给组会新人听`）：加强“问题 -> 方法 -> 验证 -> 局限”的叙事链条。
+- **按图表顺序组织**（如 `按图表顺序讲`）：按 Figure / Table / Equation / Algorithm 的出现顺序推进。
 
 ## 证据规则
 
 这套规则最看重的是边界，而不是把回答写满。
 
-- **外部事实**：venue、年份、CCF、代码链接、官方项目页必须核验。未核验写“未核验”，找过但没找到写“未找到”。可联网时按优先级核验 arXiv、OpenReview / ACM / IEEE / proceedings、Hugging Face Papers、Semantic Scholar / DBLP、官方项目页或仓库 README。
+- **外部事实**：venue、年份、CCF、代码链接、官方项目页必须核验。可联网时按优先级核验 arXiv、OpenReview / ACM / IEEE / proceedings、Hugging Face Papers、Semantic Scholar / DBLP、官方项目页或仓库 README；未核验写“未核验”，找过但没找到写“未找到”。
 - **实验数字**：提升幅度、参数量、指标值必须能定位到原文 Table / Figure 编号或具体段落。数字只来自摘要时写“摘要中提到”。
 - **实现细节**：论文没有说明的实现细节写“论文未说明”。工程拆解模式下，公式-代码对齐只在用户提供代码时启用。
 - **跨论文比较**：检查数据集、评估协议、模型规模、训练预算、指标定义和测试 setting。不一致或未知时标注“口径不完全可比”或“口径未核验”。
 - **图表与公式**：没有可读原文或用户提供的视觉内容时，不描述图表元素、坐标、曲线或趋势。
 
-## 默认输出示例
-
-```text
-精读这篇论文：https://arxiv.org/abs/xxxx.xxxxx
-```
-
-默认输出结构：
-
-- 关键词（不超过 5 个）
-- 一段话总结（不超过 150 字）
-- 论文基本信息：标题 / venue/年份 / 链接 / 任务领域
-- 核心问题与贡献
-- 方法深度解析
-- 实验与结果
-- 批判性讨论
-
-只能读到摘要时，会明确写“仅基于摘要”，不会假装读完整篇。
-
-## 项目状态
-
-当前版本：`v0.1.2`
-
-已有能力：
-
-- 三种阅读模式和两个子开关。
-- Agent Skill 和 Web Prompt Kit 双入口。
-- Claude Project、ChatGPT Project、Codex、Claude Code 四个 Primary 平台。
-- 外部事实核验路径、比较维度确认、跨论文口径审计。
-- 模糊候选确认、公式-代码对齐（需用户提供代码）、调研比较表最小骨架。
-
-验证状态：
-
-`v0.1.1` 已完成一次真实 PDF 文本层最小验证，记录见 [docs/validation-2026-05-27.md](./docs/validation-2026-05-27.md)。这次验证使用一篇 16 页 PDF，覆盖材料范围说明、观点 / 路线图论文变体、实验和产业数字锚点、公式抽取乱码边界，以及 venue / CCF / 官方代码未核验时不补事实。
-
-这不是所有平台的完整端到端回归。Claude Project、ChatGPT Project、Codex、Claude Code 仍会受到各自 PDF 读取、联网和上下文能力影响。
-
 ## 已知限制
 
-- 尚未覆盖每个平台的完整端到端回归测试。
+- 尚未覆盖每个平台的完整端到端回归测试。`v0.1.1` 起以真实论文验证记录逐步补齐，当前覆盖见 [docs/validation-2026-05-27.md](./docs/validation-2026-05-27.md)。
 - Web 版不能调用本地工具；外部事实核验取决于当前平台是否可联网。
 - PDF 图表读取能力由平台和模型决定；读不到时退化为基于文本、caption 或用户截图的解释。
 - Markdown 数学渲染由客户端决定；部分客户端对行内 `$...$` 的渲染可能不稳定，规则会优先使用行内 `\(...\)` 或普通符号/中文术语兜底。
 - 公式-代码对齐只在用户提供代码时启用，不默认 clone 或分析代码仓库。
 - 这个项目不是文献管理器，也不默认生成 PPT、BibTeX 或全文翻译。
 
-## 仓库结构
+## 反馈论文被读错
 
-```text
-paper-reading-zh/
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   └── PULL_REQUEST_TEMPLATE.md
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── README.md
-├── LICENSE
-├── DESIGN.md
-├── SECURITY.md
-├── docs/
-│   ├── release-v0.1.1.md
-│   ├── release-v0.1.2.md
-│   └── validation-2026-05-27.md
-├── paper-reading-zh/
-│   ├── SKILL.md
-│   └── references/
-│       └── modes.md
-└── prompts/
-    ├── README.md
-    ├── claude-project.md
-    └── chatgpt-project.md
-```
+如果发现规则没拦住编造：venue 被补出来了、看不见的图表被描述了、实验数字没有锚点，请用 [paper_misread issue 模板](https://github.com/MrGeDiao/paper-reading-zh/issues/new?template=paper_misread.yml)反馈，附论文锚点和出错输出。这类案例会直接变成规则的回归用例。
 
-## 设计说明
+## FAQ
 
-设计口径、兼容矩阵和证据规则的完整说明见 [DESIGN.md](./DESIGN.md)。
+**输出会不会到处都是“未核验”，显得啰嗦？**
+默认是约 2000 到 3500 字的中等深读，证据标签只出现在确实无法核验的字段上。可联网的环境会先按优先级核验，核验到了就写真实值。
+
+**为什么不做成脚本、MCP server 或自动下载论文的工具？**
+有意的设计约束：纯规则包没有脚本和外部依赖，在任何能读文本的平台上都可用，也不引入“默认联网抓取”带来的版权与编造风险。完整设计约束见 [DESIGN.md](./DESIGN.md)。
+
+**非 CS / AI 论文能用吗？**
+可以。材料范围和证据边界照常生效，但不会强行输出 CCF 等级或工程复现建议。
+
+## 版本与文档
+
+变更记录见 [CHANGELOG.md](./CHANGELOG.md)，各版本发布说明见 [docs/](./docs/)。设计口径、兼容矩阵和公开文件清单见 [DESIGN.md](./DESIGN.md)，贡献方式见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
+
+## 致谢
+
+本项目认可并感谢 [LINUX DO](https://linux.do) 社区。
 
 ## License
 
