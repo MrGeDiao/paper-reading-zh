@@ -2,6 +2,15 @@
 
 所有值得用户注意的变化都会记录在这里。版本号遵循轻量语义版本：规则或公开文档的兼容增强走 patch，小范围行为变化走 minor，破坏安装或输出契约再考虑 major。
 
+## v0.1.3 - 2026-06-17
+
+文档规划和维护溯源版本。
+
+- 在 `DESIGN.md` 中补充维护溯源说明，明确本次更新采用 `tri-collab` 式本地维护工作流；它不是 `paper-reading-zh` 的运行时依赖或用户安装步骤。
+- 新增 `docs/release-v0.1.3.md`，记录本次文档更新的范围、决策依据和已知限制。
+- 更新 README 版本标识和仓库结构。
+- 本版本不修改 `paper-reading-zh/SKILL.md`、`paper-reading-zh/references/modes.md` 或 Web Prompt Kit；阅读模式、证据规则和兼容矩阵均无变化。
+
 ## v0.1.2 - 2026-05-27
 
 规避 Codex Desktop 等客户端对行内 dollar-style LaTeX 渲染不稳定的问题。

@@ -71,6 +71,7 @@ CONTRIBUTING.md
 SECURITY.md
 docs/release-v0.1.1.md
 docs/release-v0.1.2.md
+docs/release-v0.1.3.md
 docs/validation-2026-05-27.md
 .github/ISSUE_TEMPLATE/bug_report.yml
 .github/ISSUE_TEMPLATE/paper_misread.yml
@@ -169,6 +170,12 @@ README 可以用 `shuorenhua` 做风格复查，但复查后必须回核：
 - “Primary / Compatible / not first-regression-tested / Not supported” 等兼容性措辞没有被软化。
 - “未核验”“未找到”“摘要中提到”“论文未说明”等证据标签没有被改写。
 
+## Maintenance Provenance
+
+维护者可以用多 agent 工作流辅助设计、审稿和发布说明，但这属于维护过程，不属于 `paper-reading-zh` 的用户侧运行时能力。
+
+本次 `v0.1.3` 文档更新使用 `tri-collab` 式本地维护工作流作为协作方式说明。具体本机 skill 路径不写入公开文档；该流程不是公开安装路径、运行时依赖，也不代表论文精读流程会自动调度多个 agent。
+
 ## P0/P1 Design Summary
 
 v0.1 包含以下规则增强，已落到 `SKILL.md`、`references/modes.md` 和两份 Web prompt 中：
@@ -188,16 +195,18 @@ v0.1 包含以下规则增强，已落到 `SKILL.md`、`references/modes.md` 和
 - 不默认联网下载论文、不默认 clone 或分析代码仓库。
 - 公式-代码对齐只在用户提供代码时启用。
 - 比较维度确认只在用户未指定维度时触发，不增加默认追问。
+- 维护过程可以使用多 agent 审稿或风险扫描，但不得把维护流程写成 `paper-reading-zh` 的运行时行为。
 
 ## Validation Status
 
-v0.1.2 当前状态：
+v0.1.3 当前状态：
 
 - Skill 文件格式已通过 `quick_validate.py`。
 - 已做结构性前向检查：深读、工程拆解、按图表顺序、摘要兜底、无可信材料退出、防编造规则。
 - Web prompts 已完成 Claude Code 评审，并与 Agent Skill 规则做过漂移检查。
 - 已用一篇真实 16 页 PDF 完成文本层最小验证，覆盖材料范围、观点 / 路线图论文变体、数字锚点、公式抽取乱码边界和未核验外部事实标签；记录见 `docs/validation-2026-05-27.md`。
 - v0.1.2 仅调整数学表达默认写法，未引入新的阅读模式或证据规则变更，不需要额外端到端验证。
+- v0.1.3 仅更新公开文档、版本记录和维护溯源，不修改阅读规则、Prompt Kit 或 Agent Skill 运行时内容，不需要额外端到端验证。
 - 尚未完成 Claude Project、ChatGPT Project、Codex、Claude Code 四个平台的完整端到端回归测试。
 
 因此公开文案只写“Primary”或“Compatible”，不写“fully tested across all platforms”。
