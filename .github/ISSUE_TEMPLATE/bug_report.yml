@@ -41,6 +41,6 @@ body:
     attributes:
       label: 版本和环境
       description: 版本号、commit、运行时名称即可。不要贴 token、cookie 或私有路径。
-      placeholder: "v0.1.1 / commit SHA / Codex version / Claude Code version"
+      placeholder: "版本号（见 README badge 或 CHANGELOG）/ commit SHA / Codex version / Claude Code version"
     validations:
       required: false

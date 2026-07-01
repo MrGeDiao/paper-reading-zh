@@ -3,7 +3,7 @@
 给 AI 加一套论文阅读的证据规则：未核验的不补，读不到的不编，比较前先对口径。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.1.3-green.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.1.4-green.svg)](./CHANGELOG.md)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![LINUX DO](https://img.shields.io/badge/LINUX%20DO-Community-blue.svg)](https://linux.do)
 
@@ -188,8 +188,6 @@ Hermes 和 OpenClaw 需要保留完整目录结构（包含 `references/modes.md
 可以。材料范围和证据边界照常生效，但不会强行输出 CCF 等级或工程复现建议。
 
 ## 版本与文档
-
-当前版本：`v0.1.3`。本版本只更新公开文档和维护溯源，不改变论文阅读规则。
 
 变更记录见 [CHANGELOG.md](./CHANGELOG.md)，各版本发布说明见 [docs/](./docs/)。设计口径、兼容矩阵和公开文件清单见 [DESIGN.md](./DESIGN.md)，贡献方式见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
