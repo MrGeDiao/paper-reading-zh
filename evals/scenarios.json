@@ -1,0 +1,321 @@
+[
+  {
+    "id": "standard_algorithm_deep_read",
+    "category": "positive_standard",
+    "user_input": "我上传了论文 PDF。请用中文做一版中等深读，重点讲清新算法的设计动机、关键公式、主结果和消融实验。",
+    "material_context": "可读取完整正文；论文核心贡献是新算法，主要证据是基线比较和消融。",
+    "expected_behavior": "进入深读模式，按标准方法 / 实验论文组织，并把实验结果连接到具体设计假设。",
+    "must_include": [
+      "材料范围",
+      "核心问题与贡献",
+      "方法深度解析",
+      "实验如何支持设计假设",
+      "批判性讨论"
+    ],
+    "must_not_include": [
+      "默认全文翻译",
+      "无法定位的实验数字",
+      "无工程意图时展开长篇接入方案"
+    ]
+  },
+  {
+    "id": "system_measurement_adaptation",
+    "category": "positive_type",
+    "user_input": "请精读这篇生产系统测量论文。重点解释系统设计、trace 怎么采、主要发现是否能推广。",
+    "material_context": "可读取系统架构、生产 trace 采样说明、时间窗口和测量结果。",
+    "expected_behavior": "识别为系统 / 测量类型，不硬套模型训练骨架，重点审查系统机制、采样、工作负载和有效性威胁。",
+    "must_include": [
+      "系统架构或测量方法",
+      "工作负载或样本",
+      "时间窗口",
+      "观测偏差",
+      "可推广边界"
+    ],
+    "must_not_include": [
+      "把相关性写成因果",
+      "把生产规模当作设计正确性的证明",
+      "虚构消融实验"
+    ]
+  },
+  {
+    "id": "dataset_benchmark_adaptation",
+    "category": "positive_type",
+    "user_input": "帮我深读这个新数据集和 benchmark，尤其看数据质量、划分、指标和是否可能泄漏。",
+    "material_context": "可读取数据构建、标注、任务、数据划分、指标、基线和许可章节。",
+    "expected_behavior": "识别为数据集 / benchmark 类型，围绕资源构建、评估协议、覆盖与风险组织。",
+    "must_include": [
+      "数据来源与标注",
+      "数据划分与指标",
+      "基线结果能验证什么",
+      "泄漏或污染",
+      "许可与适用边界"
+    ],
+    "must_not_include": [
+      "把榜单分数等同于真实能力",
+      "把数据规模等同于数据质量",
+      "默认输出模型复现方案"
+    ]
+  },
+  {
+    "id": "theory_proof_adaptation",
+    "category": "positive_type",
+    "user_input": "请逐步讲懂这篇理论论文的假设、主定理、证明思路和结论适用范围。",
+    "material_context": "可读取定义、假设、主定理、关键引理和证明正文。",
+    "expected_behavior": "识别为理论 / 证明类型，区分形式化结论、证明依赖、直觉解释和现实含义。",
+    "must_include": [
+      "问题设定与定义",
+      "核心假设",
+      "主定理",
+      "证明策略与依赖",
+      "适用范围或反例"
+    ],
+    "must_not_include": [
+      "用实验代替证明",
+      "补写论文没有的推导",
+      "把定理直接写成工程有效性证明"
+    ]
+  },
+  {
+    "id": "review_position_adaptation",
+    "category": "positive_type",
+    "user_input": "这是一篇领域综述兼立场文章。请分析它的分类框架、文献覆盖、核心立场和遗漏的反方观点。",
+    "material_context": "可读取综述范围、引用文献、分类框架、立场论证与结论。",
+    "expected_behavior": "识别为综述 / 立场类型，审查材料选择、综合方式、论证链、分歧和作者偏向。",
+    "must_include": [
+      "覆盖范围",
+      "文献选择方法或未说明",
+      "分类框架",
+      "共识与分歧",
+      "反方观点或遗漏"
+    ],
+    "must_not_include": [
+      "硬套方法深度解析",
+      "虚构模型消融",
+      "把引用数量当作论证质量"
+    ]
+  },
+  {
+    "id": "viewpoint_roadmap_adaptation",
+    "category": "positive_type",
+    "user_input": "请精读这份 AI 芯片路线图 white paper，逐项区分现状、作者预测和可以外部核验的部分。",
+    "material_context": "材料包含产品路线、内部 benchmark、产能与供应链预测，部分没有公开复验来源。",
+    "expected_behavior": "使用观点 / 路线图变体，分析主张链、证据强度和产业假设，并对高影响声明逐项标注来源状态。",
+    "must_include": [
+      "核心主张链条",
+      "证据类型与证据强度",
+      "论文内部声明",
+      "作者预测",
+      "已公开第三方核验或未核验"
+    ],
+    "must_not_include": [
+      "把未来路线写成已实现事实",
+      "把内部 benchmark 写成独立验证",
+      "硬套算法论文实验骨架"
+    ]
+  },
+  {
+    "id": "evidence_audit_overlay",
+    "category": "positive_switch",
+    "user_input": "对这篇论文做证据审计：列出核心主张、证据链，并逐项核对哪些结论真的被实验支持。",
+    "material_context": "可读取完整正文、主结果表、消融和局限章节。",
+    "expected_behavior": "启用证据审计子开关，以可定位原文为基础逐项说明支持强度及其依据。",
+    "must_include": [
+      "核心主张",
+      "原文锚点",
+      "证据类型",
+      "支持强度及依据",
+      "未覆盖问题"
+    ],
+    "must_not_include": [
+      "claim id",
+      "traceability manifest",
+      "把缺少证据写成反证",
+      "默认运行脚本"
+    ]
+  },
+  {
+    "id": "abstract_only_fallback",
+    "category": "material_boundary",
+    "user_input": "我现在只有这篇论文的摘要，请先帮我完整精读。",
+    "material_context": "只能读取摘要，没有正文、图表、附录或可信的完整页面。",
+    "expected_behavior": "明确标注仅基于摘要，不进入完整深读；先询问是否继续轻量解读。",
+    "must_include": [
+      "仅基于摘要",
+      "不能做完整深读",
+      "摘要中提到",
+      "不能确认的信息"
+    ],
+    "must_not_include": [
+      "具体 Figure 或 Table 内容",
+      "正文实现细节",
+      "未提供的 venue 或代码链接"
+    ]
+  },
+  {
+    "id": "ambiguous_title_candidates",
+    "category": "material_boundary",
+    "user_input": "精读一下《Scaling Laws for X》这篇论文。",
+    "material_context": "检索到三个标题高度相似但作者、年份和摘要不同的可信候选。",
+    "expected_behavior": "列出最可能的 2 到 3 个候选及不一致点，请用户确认后再深读。",
+    "must_include": [
+      "2 到 3 个候选",
+      "作者或年份",
+      "需要确认"
+    ],
+    "must_not_include": [
+      "默选一个候选并深读",
+      "混合多个候选内容",
+      "编造原文细节"
+    ]
+  },
+  {
+    "id": "garbled_pdf_extraction",
+    "category": "material_boundary",
+    "user_input": "请解释 PDF 第 4 页的公式和表格，文本抽取结果看起来有乱码和列错位。",
+    "material_context": "正文上下文可读，但公式字符缺失，表格列发生错位，图 caption 不完整。",
+    "expected_behavior": "说明抽取异常，只解释上下文可以确认的含义，不基于乱码重构公式、表格或图表。",
+    "must_include": [
+      "乱码或错位",
+      "材料限制",
+      "只解释可确认内容"
+    ],
+    "must_not_include": [
+      "重构缺失公式",
+      "猜测表格数值对应关系",
+      "描述看不见的图表趋势"
+    ]
+  },
+  {
+    "id": "cross_paper_incomparable_metrics",
+    "category": "comparison_boundary",
+    "user_input": "比较这三篇论文，直接告诉我谁最好。它们用了不同数据集、模型规模和指标定义。",
+    "material_context": "三篇论文的任务相近，但评估协议、训练预算、测试 setting 和指标口径不同。",
+    "expected_behavior": "先按用户目标确定比较维度，审计可比性并降低结论强度，不给简单胜负。",
+    "must_include": [
+      "数据集与评估协议",
+      "模型规模或训练预算",
+      "指标定义",
+      "口径不完全可比或口径未核验"
+    ],
+    "must_not_include": [
+      "简单排名",
+      "直接宣布全面优于",
+      "忽略测试 setting"
+    ]
+  },
+  {
+    "id": "unofficial_code_alignment",
+    "category": "engineering_boundary",
+    "user_input": "我上传了论文 PDF 和一个社区复现仓库。请做工程拆解，并把公式对应到代码函数。",
+    "material_context": "代码仓库由第三方维护，README 明确说明不是作者官方实现。",
+    "expected_behavior": "进入工程拆解并启用公式-代码对齐，清楚区分论文事实、代码实现和不一致。",
+    "must_include": [
+      "非官方实现",
+      "公式-代码对齐",
+      "论文明确说明",
+      "代码实现",
+      "实现与论文不一致或论文未说明"
+    ],
+    "must_not_include": [
+      "把社区代码当作论文事实",
+      "声称代码来自作者",
+      "分析用户未提供的其他仓库"
+    ]
+  },
+  {
+    "id": "figure_by_figure_switch",
+    "category": "positive_switch",
+    "user_input": "请跟着论文的图表顺序讲，重点解释架构图、主结果表、消融表和关键公式。",
+    "material_context": "完整 PDF 可读，图表视觉内容和 caption 均可访问。",
+    "expected_behavior": "启用按图表顺序子开关，使用原文真实编号推进，并连接图表与论文主张。",
+    "must_include": [
+      "真实 Figure / Table / Equation / Algorithm 编号",
+      "展示什么",
+      "支撑的结论",
+      "容易误读的点"
+    ],
+    "must_not_include": [
+      "平均展开所有次要图表",
+      "虚构编号",
+      "脱离正文解释曲线"
+    ]
+  },
+  {
+    "id": "uncertain_type_no_forced_template",
+    "category": "type_boundary",
+    "user_input": "请精读这篇跨学科论文，但它同时有概念框架、少量测量和案例，我也不确定算哪一类。",
+    "material_context": "正文可读，但主要贡献和证据结构混合，无法可靠归入任一既定类型。",
+    "expected_behavior": "不反复要求用户分类，也不强行按标准方法 / 实验论文组织；沿用深读主模式，只保留材料实际支持的章节并说明类型判断有限。",
+    "must_include": [
+      "类型判断有限或无法可靠分类",
+      "材料实际支持的章节",
+      "沿用深读主模式"
+    ],
+    "must_not_include": [
+      "强行套标准方法 / 实验骨架",
+      "虚构方法或实验章节",
+      "反复要求用户选择类型"
+    ]
+  },
+  {
+    "id": "translation_only_no_trigger",
+    "category": "negative_trigger",
+    "user_input": "把这段英文翻译成中文：We study the optimization landscape of deep linear networks.",
+    "material_context": "只有一个待翻译句子，没有论文锚点和精读意图。",
+    "expected_behavior": "不触发 paper-reading-zh，只完成直接翻译。",
+    "must_include": [
+      "中文翻译"
+    ],
+    "must_not_include": [
+      "关键词块",
+      "论文基本信息",
+      "方法深度解析",
+      "证据审计"
+    ]
+  },
+  {
+    "id": "single_term_definition_no_trigger",
+    "category": "negative_trigger",
+    "user_input": "什么是对比学习？",
+    "material_context": "没有论文标题、链接、PDF、摘要或图表。",
+    "expected_behavior": "不触发 paper-reading-zh，按普通术语解释回答。",
+    "must_include": [
+      "术语定义"
+    ],
+    "must_not_include": [
+      "要求选择深读模式",
+      "论文基本信息",
+      "虚构论文锚点"
+    ]
+  },
+  {
+    "id": "bibtex_only_no_trigger",
+    "category": "negative_trigger",
+    "user_input": "给我生成这篇论文的 BibTeX，别做内容分析。",
+    "material_context": "用户只要求书目信息格式，没有深读意图。",
+    "expected_behavior": "不触发 paper-reading-zh；若元数据足够，只处理 BibTeX 请求。",
+    "must_include": [
+      "BibTeX 请求边界"
+    ],
+    "must_not_include": [
+      "完整深读",
+      "方法与实验分析",
+      "证据审计"
+    ]
+  },
+  {
+    "id": "find_download_only_no_trigger",
+    "category": "negative_trigger",
+    "user_input": "帮我找一下这篇论文的 PDF 下载链接。",
+    "material_context": "用户只想查找或下载论文，没有深读、比较或工程意图。",
+    "expected_behavior": "不触发 paper-reading-zh，只按当前平台能力处理查找请求。",
+    "must_include": [
+      "查找或下载请求边界"
+    ],
+    "must_not_include": [
+      "论文精读骨架",
+      "批判性讨论",
+      "自动进入工程拆解"
+    ]
+  }
+]

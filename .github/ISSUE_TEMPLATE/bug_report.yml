@@ -20,6 +20,7 @@ body:
         - Claude Code Agent Skill
         - Claude Project prompt
         - ChatGPT Project prompt
+        - ChatGPT Skill beta
         - Custom GPT
         - Hermes / OpenClaw compatible runtime
         - Documentation only

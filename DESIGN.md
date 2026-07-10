@@ -5,7 +5,7 @@
 - Web Prompt Kit：给 Claude Project、ChatGPT Project 等网页端项目使用。
 - Agent Skill：给 Codex、Claude Code，以及兼容 AgentSkills-style skill folder 的运行时使用。
 
-目标不是把论文翻译成中文，而是帮助读者基于原文和可核验外部信息，理解论文的问题、方法机制、图表公式、实验验证和局限。
+目标不是把论文翻译成中文，而是帮助读者基于原文和可核验外部信息，按论文的主要贡献与证据结构理解问题、方法或论证、图表公式、证据强度和局限。
 
 ## Scope
 
@@ -18,6 +18,7 @@
 - 公式、图表、实验结果拆解。
 - 工程复现或接入可行性判断。
 - 多篇论文横向比较。
+- 核心主张与原文证据的逐项审计。
 
 不适合：
 
@@ -37,26 +38,28 @@
 | Tier 1 Web | ChatGPT Project | 网页端论文陪读、组会准备、调研 | Primary |
 | Tier 1 Agent | Codex | Agent Skill 安装与触发 | Primary |
 | Tier 1 Agent | Claude Code | Agent Skill 安装与触发 | Primary |
+| Tier 2 | ChatGPT Skills beta | 支持 Skills 的 ChatGPT 工作区 | Compatible, not first-regression-tested |
 | Tier 2 | Custom GPT | ChatGPT 内的可复用 GPT 配置 | Compatible, derived from `prompts/chatgpt-project.md` |
 | Tier 2 | Hermes Agent | AgentSkills-compatible skill runtime | Compatible, not first-regression-tested |
 | Tier 2 | OpenClaw | AgentSkills-compatible skill runtime | Compatible, not first-regression-tested |
-| Not now | Cursor rules / IDE rules | 规则格式不同 | Not supported in v0.1 |
-| Not now | MCP server | 本项目不是 MCP server | Not supported in v0.1 |
-| Not now | Browser extension | 交互形态不同 | Not supported in v0.1 |
-| Not now | opencode | 未核验安装与触发语义 | Not supported in v0.1 |
+| Not now | Cursor rules / IDE rules | 规则格式不同 | Not supported in v0.2 |
+| Not now | MCP server | 本项目不是 MCP server | Not supported in v0.2 |
+| Not now | Browser extension | 交互形态不同 | Not supported in v0.2 |
+| Not now | opencode | 未核验安装与触发语义 | Not supported in v0.2 |
 
 兼容性的依据：
 
-- Agent Skill 形态只依赖 `SKILL.md`、YAML frontmatter 和 `references/` 渐进加载，不依赖平台专属 API。
+- Agent Skill 形态只依赖 `SKILL.md`、YAML frontmatter 和 `references/` 渐进加载，不依赖平台专属 API；`agents/openai.yaml` 只提供可选 UI 元数据。
 - 当前 skill 没有脚本、外部工具调用或本地二进制依赖。
-- Hermes 和 OpenClaw 都公开说明了 AgentSkills-compatible skill folder 支持，但本仓 v0.1 还没有对它们做完整回归测试。
+- ChatGPT Skills beta、Hermes 和 OpenClaw 的兼容性基于公开格式与能力说明；本仓 v0.2 尚未对这些入口做首轮完整实机回归。
 
 一个运行时从 Compatible 升到 Primary，需要至少完成：
 
 1. 安装或加载 `paper-reading-zh/`。
 2. 触发深读模式、工程拆解模式、调研比较模式。
-3. 验证 `references/modes.md` 能被按需使用。
-4. 用一篇真实论文完成一次端到端输出，并确认没有格式或证据边界漂移。
+3. 验证 `references/modes.md` 与 `references/paper-types.md` 能被按需使用。
+4. 验证论文类型自适应与证据审计不会破坏材料范围和防编造边界。
+5. 用一篇真实论文完成一次端到端输出，并确认没有格式或证据边界漂移。
 
 ## Public Surface
 
@@ -73,15 +76,25 @@ docs/release-v0.1.1.md
 docs/release-v0.1.2.md
 docs/release-v0.1.3.md
 docs/release-v0.1.4.md
+docs/release-v0.2.0.md
 docs/validation-2026-05-27.md
+docs/validation-2026-07-10-v0.2.0.md
 .github/ISSUE_TEMPLATE/bug_report.yml
 .github/ISSUE_TEMPLATE/paper_misread.yml
 .github/PULL_REQUEST_TEMPLATE.md
+.github/workflows/validate.yml
 paper-reading-zh/SKILL.md
+paper-reading-zh/agents/openai.yaml
 paper-reading-zh/references/modes.md
+paper-reading-zh/references/paper-types.md
 prompts/README.md
 prompts/claude-project.md
 prompts/chatgpt-project.md
+evals/scenarios.json
+evals/fixtures/system-measurement.md
+evals/fixtures/theory-damaged-extraction.md
+evals/fixtures/evidence-audit.md
+scripts/check_rules.py
 ```
 
 工作记录、草稿和本地验证材料不属于公开发布面。未来如果从长期开发仓发布公开版本，不建议直接把完整开发历史改成 public；更稳妥的做法是创建干净公开仓，或使用 orphan public 分支，只发布上面的公开文件。
@@ -127,6 +140,20 @@ prompts/chatgpt-project.md
 
 - 组会 / 技术博客风格：加强“问题 -> 方法 -> 验证 -> 局限”的叙事链条。
 - 按图表顺序组织：按 Figure / Table / Equation / Algorithm 的出现顺序推进；优先架构图、主结果表、消融表、关键公式和算法。
+- 证据审计：把核心主张对到原文锚点、证据类型、支持强度依据和未覆盖问题；缺少证据不是反证。
+
+## Paper Types
+
+主模式回答“用户想怎么读”，论文类型回答“材料主要靠什么结构建立贡献和证据”。v0.2 支持：
+
+- 标准方法 / 实验。
+- 系统 / 测量。
+- 数据集 / benchmark。
+- 理论 / 证明。
+- 综述 / 立场。
+- 观点 / 路线图。
+
+先确认实际可读材料，再按主要贡献与证据结构选主类型；混合型论文可说明次要类型，但不拼接多个完整骨架。仍无法判断时不强行贴类型标签，沿用主模式并只输出材料实际支持的章节。详细边界和主体骨架见 `paper-reading-zh/references/paper-types.md`。
 
 ## Material Scope
 
@@ -139,12 +166,13 @@ prompts/chatgpt-project.md
 - 外部事实包括 venue、年份、CCF、代码链接、官方项目页和 arXiv 元数据。未核验写“未核验”；找过但没找到写“未找到”。
 - 可联网或可读取外部页面时，优先核验 arXiv、OpenReview / ACM / IEEE / proceedings、Hugging Face Papers、Semantic Scholar / DBLP、官方项目页或仓库 README。
 - Figure / Table / Equation / Algorithm 编号必须来自实际原文或用户提供内容。
-- 实验数字必须能定位到原文 Table / Figure 编号或具体段落。
+- 实验、测量、路线图和产品数字必须能定位到原文 Section / Table / Figure / Sidebar / 页码或具体段落。
 - 跨论文、跨模型、跨版本比较时，必须检查数据集、评估协议、模型规模、训练预算、指标定义和测试 setting；不一致或未知时标注“口径不完全可比”或“口径未核验”。
 - 如果数字来自摘要，写“摘要中提到”。
 - 论文未说明的实现细节写“论文未说明”。
-- 不写“完全解决”“全面优于”“适用于所有场景”这类绝对化表达，除非论文和实验确实支持。
-- 批判性讨论必须区分论文声明、实验支持、合理推断和不确定或未覆盖。
+- 不写“完全解决”“全面优于”“适用于所有场景”这类绝对化表达，除非论文和证据确实支持。
+- 批判性讨论必须区分论文声明、证据支持、合理推断和不确定或未覆盖。
+- 证据审计的支持强度必须解释依据；材料未给出直接证据时写“未见直接证据”或“无法判断”，不把缺证据写成反证。
 
 ## Web Prompt Boundaries
 
@@ -160,7 +188,7 @@ Web prompt 版本和 Agent Skill 版本共享同一套阅读规则，但能力�
 README 和 prompts 面向读者，不按 skill 规则文体写。文案要求：
 
 - 直接说这是什么、给谁用、解决什么问题。
-- 保留必要术语，如“证据边界”“防编造”“批判性四层”“图表顺序子开关”。
+- 保留必要术语，如“证据边界”“防编造”“论文类型自适应”“证据审计”“批判性四层”“图表顺序子开关”。
 - 不写“赋能”“重塑”“一站式”“革命性”“全方位”“智能化”等口号。
 - 不用 emoji 和装饰性图标。
 - 不为了去 AI 味删掉硬数字、字段限制、兼容性状态或证据边界。
@@ -171,22 +199,33 @@ README 可以用中文文风复查工具（如开源的 shuorenhua 规则包）�
 - “Primary / Compatible / not first-regression-tested / Not supported” 等兼容性措辞没有被软化。
 - “未核验”“未找到”“摘要中提到”“论文未说明”等证据标签没有被改写。
 
-## P0/P1 Design Summary
+## v0.1 P0/P1 Design Summary
 
 v0.1 包含以下规则增强，已落到 `SKILL.md`、`references/modes.md` 和两份 Web prompt 中：
 
 | ID | 要求 | 落点 |
 |---|---|---|
-| P0-1 | 外部事实核验路径具体化 | `SKILL.md` 执行流程步骤 5；Evidence Rules |
-| P0-2 | 调研比较先确认维度 | `references/modes.md` 比较维度确认；`SKILL.md` 步骤 6 |
+| P0-1 | 外部事实核验路径具体化 | `SKILL.md` 执行流程步骤 6；Evidence Rules |
+| P0-2 | 调研比较先确认维度 | `references/modes.md` 比较维度确认；`SKILL.md` 步骤 7 |
 | P0-3 | 跨论文口径审计 | `SKILL.md` 证据规则；`references/modes.md` 比较规则 |
-| P1-1 | 模糊候选确认 | `SKILL.md` 材料范围步骤 4 |
+| P1-1 | 模糊候选确认 | `SKILL.md` 材料范围步骤 3 |
 | P1-2 | 公式-代码对齐 | `references/modes.md` 工程拆解模式；`SKILL.md` 证据规则 |
 | P1-3 | 比较表最小列固定 | `references/modes.md` 紧凑比较表 |
 
+## v0.2 Design Summary
+
+| ID | 要求 | 落点 |
+|---|---|---|
+| V2-1 | 按主要贡献与证据结构选择论文类型 | `SKILL.md` 步骤 4；`references/paper-types.md` |
+| V2-2 | 系统、benchmark、理论、综述等使用不同主体骨架 | `references/paper-types.md`；两份 Web prompt |
+| V2-3 | 证据审计可与主模式和论文类型叠加 | `references/modes.md`；两份 Web prompt |
+| V2-4 | 三入口核心规则漂移检查与 CI 门禁 | `scripts/check_rules.py`；`.github/workflows/validate.yml` |
+| V2-5 | 声明式回归场景与可复现合成 fixture | `evals/scenarios.json`；`evals/fixtures/` |
+| V2-6 | OpenAI UI 元数据 | `paper-reading-zh/agents/openai.yaml` |
+
 设计约束：
 
-- 不引入多 agent 调度、固定文献流水线、traceability manifest 或 claim id。
+- 不引入多 agent 调度、固定文献流水线、traceability manifest 或 claim id；证据审计只是一张按需输出的轻量对照表。
 - 不默认联网下载论文、不默认 clone 或分析代码仓库。
 - 公式-代码对齐只在用户提供代码时启用。
 - 比较维度确认只在用户未指定维度时触发，不增加默认追问。
@@ -195,9 +234,9 @@ v0.1 包含以下规则增强，已落到 `SKILL.md`、`references/modes.md` 和
 
 当前状态：
 
-- Skill 文件格式已通过 AgentSkills 风格的 frontmatter / 目录结构校验（本仓库不附带校验脚本）。
-- 已做结构性前向检查：深读、工程拆解、按图表顺序、摘要兜底、无可信材料退出、防编造规则。
-- Web prompts 已完成 Claude Code 评审，并与 Agent Skill 规则做过漂移检查。
+- Skill 文件格式已通过 AgentSkills 风格的 frontmatter、名称和描述校验；OpenAI UI 元数据按当前字段约束生成并通过本仓校验。
+- 仓库根目录提供 `scripts/check_rules.py`，用 Python 标准库检查必要文件、触发描述、reference 链接、UI 元数据、18 个场景、三入口关键规则和 Web prompt 自包含性；GitHub Actions 在 push / PR 时自动运行。
+- 已用三份可复现合成 fixture 做隔离前向测试：系统 / 测量与证据审计完整通过；理论 / 证明输出正确拒绝重构损坏公式，但调用结束状态受外部会话额度影响，记录见 `docs/validation-2026-07-10-v0.2.0.md`。
 - 已用一篇真实 16 页 PDF 完成文本层最小验证，覆盖材料范围、观点 / 路线图论文变体、数字锚点、公式抽取乱码边界和未核验外部事实标签；记录见 `docs/validation-2026-05-27.md`。
 - v0.1.2 仅调整数学表达默认写法，未引入新的阅读模式或证据规则变更，不需要额外端到端验证。
 - v0.1.4 修复「输出前自检」与正文相互矛盾的措辞，是把规则对齐到 v0.1.2 已发布意图，不引入新的阅读或证据行为，同样不需要额外端到端验证。
@@ -208,6 +247,8 @@ v0.1 包含以下规则增强，已落到 `SKILL.md`、`references/modes.md` 和
 ## Sources
 
 - ChatGPT Projects: https://help.openai.com/en/articles/10169521-chatgpt-projects
+- Skills in ChatGPT: https://help.openai.com/en/articles/20001066-skills-in-chatgpt
+- Agent Skills specification: https://agentskills.io/specification
 - GPTs in ChatGPT: https://help.openai.com/en/articles/8554407-create-a-custom-gpt
 - ChatGPT File Uploads FAQ: https://help.openai.com/en/articles/8555545-file-uploads-faq
 - Claude Projects: https://support.claude.com/en/articles/9517075-what-are-projects

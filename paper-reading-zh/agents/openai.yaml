@@ -1,0 +1,4 @@
+interface:
+  display_name: "中文论文精读"
+  short_description: "基于论文类型完成可信中文深读、工程拆解、多论文比较与证据审计"
+  default_prompt: "使用 $paper-reading-zh 对我提供的论文材料进行可信、可追溯的中文深读。"

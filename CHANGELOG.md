@@ -2,6 +2,20 @@
 
 所有值得用户注意的变化都会记录在这里。版本号遵循轻量语义版本：规则或公开文档的兼容增强走 patch，小范围行为变化走 minor，破坏安装或输出契约再考虑 major。
 
+## v0.2.0 - 2026-07-10
+
+论文类型自适应与证据审计版本。
+
+- 新增论文类型层：标准方法 / 实验、系统 / 测量、数据集 / benchmark、理论 / 证明、综述 / 立场、观点 / 路线图按主要贡献与证据结构选择不同主体骨架。
+- 类型判断改为先确认实际可读材料，再分类；无法可靠分类时不反复追问，也不强行套标准算法论文模板。
+- 新增可叠加的“证据审计”子开关，输出核心主张、原文锚点、证据类型、支持强度依据和未覆盖问题，并明确“缺少证据不是反证”。
+- Agent Skill、Claude Project prompt、ChatGPT Project prompt 补齐观点 / 路线图、高影响产业声明、PDF 抽取乱码、无可信材料退出、非官方代码和跨论文口径等核心规则。
+- 将详细论文类型规则拆到 `paper-reading-zh/references/paper-types.md`，保持主 `SKILL.md` 的渐进加载；frontmatter 触发描述从 586 个字符压缩到 144 个字符。
+- 新增 `paper-reading-zh/agents/openai.yaml`，为支持该元数据的 OpenAI 产品提供显示名称、短描述和默认提问。
+- 新增 18 个声明式回归场景、3 份可复现合成 fixture 和无第三方依赖的 `scripts/check_rules.py`，检查 frontmatter、reference、UI 元数据、三入口关键行为与 Web prompt 自包含性；GitHub Actions 在 push / PR 时自动运行。
+- 仓库自带校验全部通过；系统 / 测量、理论 / 证明和证据审计三组隔离前向测试结果见 `docs/validation-2026-07-10-v0.2.0.md`。
+- 新增 ChatGPT Skills beta 的兼容说明和 GitHub Release skill 压缩包；该入口尚未完成首轮实机回归。
+
 ## v0.1.4 - 2026-07-01
 
 文档一致性修补，不改变已发布的阅读规则行为。
