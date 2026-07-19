@@ -20,6 +20,8 @@
 - 回归与漂移检查：`evals/scenarios.json`、`evals/fixtures/`、`scripts/check_rules.py`
 - 设计事实源：`DESIGN.md`
 
+同步状态以 `DESIGN.md` 的 Rule Sync Matrix 为准，改规则的 PR 需更新对应行。
+
 如果只改 README 或维护文件，说明不影响运行规则即可。
 
 ## 提交前自检

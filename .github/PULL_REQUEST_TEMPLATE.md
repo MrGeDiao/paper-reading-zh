@@ -26,6 +26,7 @@
 
 - [ ] 我用真实论文或最小案例验证过
 - [ ] 我检查了 Agent Skill 和 Web Prompt Kit 没有漂移
+- [ ] 已核对 DESIGN.md Rule Sync Matrix 受影响行
 - [ ] 我运行了 `python3 scripts/check_rules.py`
 - [ ] 我没有扩大平台兼容承诺
 - [ ] 我保留了“未核验”“未找到”“摘要中提到”“论文未说明”等证据标签
