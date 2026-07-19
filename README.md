@@ -3,7 +3,7 @@
 给 AI 加一套论文阅读的证据规则：未核验的不补，读不到的不编，比较前先对口径。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.2.0-green.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.2.1-green.svg)](./CHANGELOG.md)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![LINUX DO](https://img.shields.io/badge/LINUX%20DO-Community-blue.svg)](https://linux.do)
 
@@ -97,7 +97,7 @@ Primary = 第一优先维护和验证的平台；Compatible = 按规则形态预
 
 **ChatGPT Skills beta**
 
-如果你的 ChatGPT 工作区已经提供 Skills 上传入口，可以上传 GitHub Release 附带的 `paper-reading-zh-v0.2.0.zip`。该入口仍处于 beta，本项目尚未完成首轮 ChatGPT Skills 实机回归；没有该入口时继续使用上面的 ChatGPT Project prompt。
+如果你的 ChatGPT 工作区已经提供 Skills 上传入口，可以上传 GitHub Release 附带的 `paper-reading-zh-v0.2.1.zip`。该入口仍处于 beta，本项目尚未完成首轮 ChatGPT Skills 实机回归；没有该入口时继续使用上面的 ChatGPT Project prompt。
 
 Web 版的 PDF 图表读取和联网核验能力由平台决定，详见[已知限制](#已知限制)；读不到时，规则要求先说明限制，再基于可读文本回答。
 
@@ -185,7 +185,7 @@ Hermes 和 OpenClaw 需要保留完整目录结构（包含 `references/modes.md
 
 ## 已知限制
 
-- 尚未覆盖每个平台的完整端到端回归测试。已有真实 PDF 文本层验证和 v0.2.0 合成材料前向测试，记录见 [docs/validation-2026-05-27.md](./docs/validation-2026-05-27.md) 与 [docs/validation-2026-07-10-v0.2.0.md](./docs/validation-2026-07-10-v0.2.0.md)。
+- 尚未覆盖每个平台的完整端到端回归测试。已有真实 PDF 文本层验证和 v0.2.0 合成材料前向测试，记录见 [docs/validation-2026-05-27.md](./docs/validation-2026-05-27.md) 与 [docs/validation-2026-07-10-v0.2.0.md](./docs/validation-2026-07-10-v0.2.0.md)；v0.2.1 Web 场景仅记录规则文本预期行为并明确标为未实测，见 [docs/validation-2026-07-19.md](./docs/validation-2026-07-19.md)。
 - Web 版不能调用本地工具；外部事实核验取决于当前平台是否可联网。
 - PDF 图表读取能力由平台和模型决定；读不到时退化为基于文本、caption 或用户截图的解释。
 - Markdown 数学渲染由客户端决定；部分客户端对行内 `$...$` 的渲染可能不稳定，规则会优先使用行内 `\(...\)` 或普通符号/中文术语兜底。

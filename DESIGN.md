@@ -77,6 +77,7 @@ docs/release-v0.1.2.md
 docs/release-v0.1.3.md
 docs/release-v0.1.4.md
 docs/release-v0.2.0.md
+docs/release-v0.2.1.md
 docs/validation-2026-05-27.md
 docs/validation-2026-07-10-v0.2.0.md
 docs/validation-2026-07-19.md
