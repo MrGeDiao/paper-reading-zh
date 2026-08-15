@@ -124,7 +124,7 @@ mkdir -p "$HOME/.claude/skills"
 cp -R paper-reading-zh "$HOME/.claude/skills/"
 ```
 
-重启会话后试一句 `精读这篇论文：https://arxiv.org/abs/xxxx.xxxxx`。提供论文锚点（链接 / PDF / 标题）并表达深读意图时自动触发；只给论文不说要求、或只说要求没给论文时，会先澄清一次再继续；「看看这篇」这类泛化说法按深读处理。
+重启会话后试一句 `精读这篇论文：https://arxiv.org/abs/xxxx.xxxxx`。给出论文锚点（链接 / PDF / 标题）和阅读要求时自动触发；只给其中一样，会先问一次补齐另一样再继续；「看看这篇」这类说法直接按深读处理。
 
 升级到新版本时，先删除 skills 目录下旧的 `paper-reading-zh/` 再重新拷贝；对已存在的目标目录直接 `cp -R` 不会覆盖旧版，只会嵌套出冗余的 `paper-reading-zh/paper-reading-zh/`。
 
@@ -185,7 +185,7 @@ Hermes 和 OpenClaw 需要保留完整目录结构（包含 `references/modes.md
 
 ## 已知限制
 
-- 尚未覆盖每个平台的完整端到端回归测试。已有真实 PDF 文本层验证和 v0.2.0 合成材料前向测试，记录见 [docs/validation-2026-05-27.md](./docs/validation-2026-05-27.md) 与 [docs/validation-2026-07-10-v0.2.0.md](./docs/validation-2026-07-10-v0.2.0.md)；v0.2.1 Web 场景仅记录规则文本预期行为并明确标为未实测，见 [docs/validation-2026-07-19.md](./docs/validation-2026-07-19.md)。v0.3.0 已在 Codex 上完成 12 个触发边界用例的首轮实机回归（11 个通过，1 个知名论文记忆冒充场景记为已知限制），用例清单见 [docs/trigger-regression-cases.md](./docs/trigger-regression-cases.md)，结果见 [docs/validation-2026-08-15.md](./docs/validation-2026-08-15.md)。
+- 尚未覆盖每个平台的完整端到端回归测试。已有真实 PDF 文本层验证和 v0.2.0 合成材料前向测试，记录见 [docs/validation-2026-05-27.md](./docs/validation-2026-05-27.md) 与 [docs/validation-2026-07-10-v0.2.0.md](./docs/validation-2026-07-10-v0.2.0.md)；v0.2.1 Web 场景仅记录规则文本预期行为并明确标为未实测，见 [docs/validation-2026-07-19.md](./docs/validation-2026-07-19.md)。v0.3.0 的 12 个触发边界用例已在 Codex 上完成首轮实机回归：11 个通过；1 个未通过——模型认出高知名度论文后用训练记忆冒充已读全文，经规则修正仍复现，记为已知限制。用例清单见 [docs/trigger-regression-cases.md](./docs/trigger-regression-cases.md)，结果见 [docs/validation-2026-08-15.md](./docs/validation-2026-08-15.md)。
 - Web 版不能调用本地工具；外部事实核验取决于当前平台是否可联网。
 - PDF 图表读取能力由平台和模型决定；读不到时退化为基于文本、caption 或用户截图的解释。
 - Markdown 数学渲染由客户端决定；部分客户端对行内 `$...$` 的渲染可能不稳定，规则会优先使用行内 `\(...\)` 或普通符号/中文术语兜底。
