@@ -81,6 +81,8 @@ docs/release-v0.2.1.md
 docs/validation-2026-05-27.md
 docs/validation-2026-07-10-v0.2.0.md
 docs/validation-2026-07-19.md
+docs/validation-2026-08-15.md
+docs/trigger-regression-cases.md
 .github/ISSUE_TEMPLATE/bug_report.yml
 .github/ISSUE_TEMPLATE/paper_misread.yml
 .github/PULL_REQUEST_TEMPLATE.md
