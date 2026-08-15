@@ -1,6 +1,6 @@
 ---
 name: paper-reading-zh
-description: 中文论文精读、工程拆解、多论文比较、按图表讲解与证据审计。Use when the user provides a paper anchor（PDF、链接、标题、摘要/全文、图表或论文列表）并要求深读、复现分析、比较或证据核对。不用于纯翻译、单术语定义、仅 BibTeX、只找或下载论文。
+description: 中文论文精读工作流。Use when the user provides a paper anchor such as a PDF, arXiv/OpenReview/ACM/IEEE/venue page link, paper title, abstract/full text, figure or table screenshot, or a list of papers — either with a deep-reading request (deep reading, explanation, summary/TL;DR, seminar/blog-style walkthrough, implementation/reproduction feasibility analysis, engineering integration analysis, literature survey, comparison, figure-by-figure reading, formula explanation, experiment analysis, evidence audit), or with no stated request yet (clarify once between deep reading, engineering breakdown, and comparison). Also use when the user expresses a deep-reading intent but has not named the paper (ask once which paper). Do not use for plain translation, single-term definitions, BibTeX only, or merely finding/downloading a paper.
 ---
 
 # Paper Reading Zh
@@ -13,7 +13,7 @@ description: 中文论文精读、工程拆解、多论文比较、按图表讲�
 
 ## 触发边界
 
-必须同时满足两类条件才进入本 skill：
+进入本 skill 依据两类信号；锚点与意图齐备时直接进入，只有其一时按下面的规则澄清一次：
 
 1. 论文锚点：PDF、arXiv / OpenReview / ACM / IEEE / 会议页面链接、论文标题、全文、摘要、图表截图，或多篇论文列表。
 2. 深读意图：精读、详解、讲解、读懂、组会、技术博客、讲给新人、复现、实现、工程接入、可行性判断、调研、比较、按图表、逐图、逐表、公式讲解、实验分析、证据审计、主张和证据、证据链、哪些结论被实验支持，或逐项核对结论依据。

@@ -123,23 +123,26 @@ def check_frontmatter() -> tuple[bool, str]:
     description = metadata.get("description", "")
     if not description:
         return False, "description is missing"
-    if len(description) > 220:
-        return False, f"description is not compressed enough ({len(description)} chars)"
+    if len(description) > 1024:
+        return False, f"description exceeds the 1024-character limit ({len(description)} chars)"
 
     required_terms = [
-        "论文精读",
-        "工程拆解",
-        "多论文比较",
-        "按图表",
-        "证据审计",
-        "PDF",
-        "链接",
-        "标题",
-        "纯翻译",
-        "单术语定义",
-        "BibTeX",
-        "只找或下载论文",
+        "中文论文精读工作流",
         "Use when",
+        "paper anchor",
+        "PDF",
+        "deep-reading request",
+        "summary/TL;DR",
+        "evidence audit",
+        "no stated request yet",
+        "clarify once",
+        "has not named the paper",
+        "ask once which paper",
+        "Do not use",
+        "plain translation",
+        "single-term definitions",
+        "BibTeX",
+        "finding/downloading a paper",
     ]
     missing_terms = [term for term in required_terms if term not in description]
     if missing_terms:
