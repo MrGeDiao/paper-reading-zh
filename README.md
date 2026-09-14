@@ -3,7 +3,7 @@
 给 AI 加一套论文阅读的证据规则：未核验的不补，读不到的不编，比较前先对口径。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.3.0-green.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.4.0-green.svg)](./CHANGELOG.md)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![LINUX DO](https://img.shields.io/badge/LINUX%20DO-Community-blue.svg)](https://linux.do)
 
@@ -20,7 +20,7 @@ An evidence-rule pack for AI-assisted paper reading. Docs and outputs are in Chi
 
 ## 和直接把论文丢给 AI 的区别
 
-经常用 AI 读论文的人大多见过这些行为：查不到 venue 就补一个像样的，只读到摘要却写出全文精读，两篇论文口径不同也直接判胜负。这套规则把它们逐条挡住：
+经常用 AI 读论文的人大多见过这些行为：查不到 venue 就补一个像样的，只读到摘要却写出全文精读，两篇论文口径不同也直接判胜负。这套规则要求在这些地方说明依据和限制：
 
 | 场景 | 无规则的典型行为 | 本规则下的输出 |
 |---|---|---|
@@ -97,7 +97,7 @@ Primary = 第一优先维护和验证的平台；Compatible = 按规则形态预
 
 **ChatGPT Skills beta**
 
-如果你的 ChatGPT 工作区已经提供 Skills 上传入口，可以上传 GitHub Release 附带的 `paper-reading-zh-v0.3.0.zip`。该入口仍处于 beta，本项目尚未完成首轮 ChatGPT Skills 实机回归；没有该入口时继续使用上面的 ChatGPT Project prompt。
+如果你的 ChatGPT 工作区已经提供 Skills 上传入口，可以上传 GitHub Release 附带的 `paper-reading-zh-v0.4.0.zip`。该入口仍处于 beta，本项目尚未完成首轮 ChatGPT Skills 实机回归；没有该入口时继续使用上面的 ChatGPT Project prompt。
 
 Web 版的 PDF 图表读取和联网核验能力由平台决定，详见[已知限制](#已知限制)；读不到时，规则要求先说明限制，再基于可读文本回答。
 
@@ -124,7 +124,7 @@ mkdir -p "$HOME/.claude/skills"
 cp -R paper-reading-zh "$HOME/.claude/skills/"
 ```
 
-重启会话后试一句 `精读这篇论文：https://arxiv.org/abs/xxxx.xxxxx`。给出论文锚点（链接 / PDF / 标题）和阅读要求时自动触发；只给其中一样，会先问一次补齐另一样再继续；「看看这篇」这类说法直接按深读处理。
+重启会话后试一句 `精读这篇论文：https://arxiv.org/abs/xxxx.xxxxx`。给出论文锚点（链接 / PDF / 标题）和阅读要求时自动触发；只给其中一样，会先问一次补齐另一样再继续。有论文时，「看看这篇」直接按深读处理；只说「帮我看看论文」而没有具体论文时，会先问是哪篇。
 
 升级到新版本时，先删除 skills 目录下旧的 `paper-reading-zh/` 再重新拷贝；对已存在的目标目录直接 `cp -R` 不会覆盖旧版，只会嵌套出冗余的 `paper-reading-zh/paper-reading-zh/`。
 
@@ -172,6 +172,8 @@ Hermes 和 OpenClaw 需要保留完整目录结构（包含 `references/modes.md
 - **按图表顺序组织**（如 `按图表顺序讲`）：按 Figure / Table / Equation / Algorithm 的出现顺序推进。
 - **证据审计**（如 `逐项核对哪些结论被实验支持`）：输出核心主张、原文锚点、证据类型、支持强度依据和未覆盖问题。
 
+这些选项可以组合使用。比如「比较两篇 benchmark，按表格顺序讲」，仍以比较对象、材料范围和一句话结论开头；正文按各篇的表格顺序分析，不重复输出两份单篇深读。明确要求工程拆解时，benchmark 也会保留工程接入判断。
+
 ## 证据规则
 
 这套规则最看重的是边界，而不是把回答写满。
@@ -182,10 +184,13 @@ Hermes 和 OpenClaw 需要保留完整目录结构（包含 `references/modes.md
 - **跨论文比较**：检查数据集、评估协议、模型规模、训练预算、指标定义和测试 setting。不一致或未知时标注“口径不完全可比”或“口径未核验”。
 - **图表与公式**：没有可读原文或用户提供的视觉内容时，不描述图表元素、坐标、曲线或趋势。
 - **证据审计**：缺少证据时写“未见直接证据”或“无法判断”；缺少证据不是反证，也不会自动证明主张错误。
+- **多轮追问**：可以沿用当前上下文中仍可核对的前轮原文；只有上轮回答或对话摘要时，需要重新读取原文或说明缺口。训练记忆不能充当材料来源。
+- **PDF 读取范围**：按工具实际返回的页码或片段说明材料范围。读了前 11 页，就不能因为文件共有 15 页而声称读完全文。
 
 ## 已知限制
 
-- 尚未覆盖每个平台的完整端到端回归测试。已有真实 PDF 文本层验证和 v0.2.0 合成材料前向测试，记录见 [docs/validation-2026-05-27.md](./docs/validation-2026-05-27.md) 与 [docs/validation-2026-07-10-v0.2.0.md](./docs/validation-2026-07-10-v0.2.0.md)；v0.2.1 Web 场景仅记录规则文本预期行为并明确标为未实测，见 [docs/validation-2026-07-19.md](./docs/validation-2026-07-19.md)。v0.3.0 的 12 个触发边界用例已在 Codex 上完成首轮实机回归：11 个通过；1 个未通过——模型认出高知名度论文后用训练记忆冒充已读全文，经规则修正仍复现，记为已知限制。用例清单见 [docs/trigger-regression-cases.md](./docs/trigger-regression-cases.md)，结果见 [docs/validation-2026-08-15.md](./docs/validation-2026-08-15.md)。
+- v0.4.0 最终版完成了 Codex 11/18、Claude Code 8/18 个主用例；两处首轮发现的实质问题已复测，剩余用例因额度限制未完成最终版验证，部分已完成输出仍有格式偏差。首轮与最终版结果分开记录，见 [v0.4.0 验证记录](./docs/validation-2026-09-15-v0.4.0.md)。Claude Project、ChatGPT Project 因未登录而未实测，尚不能声称全平台完整回归。
+- 历史验证包括真实 PDF 文本层测试、v0.2.0 合成材料测试和 v0.2.1 明确标为未实测的 Web 场景核对，入口见 [DESIGN 验证状态](./DESIGN.md#validation-status)。v0.3.0 的 Codex 首轮为 12 项中 11 项通过；模型认出知名论文后用训练记忆冒充已读全文的失败记录继续保留，见 [v0.3.0 验证记录](./docs/validation-2026-08-15.md)。本轮未复现，不代表以后一定不会发生。
 - Web 版不能调用本地工具；外部事实核验取决于当前平台是否可联网。
 - PDF 图表读取能力由平台和模型决定；读不到时退化为基于文本、caption 或用户截图的解释。
 - Markdown 数学渲染由客户端决定；部分客户端对行内 `$...$` 的渲染可能不稳定，规则会优先使用行内 `\(...\)` 或普通符号/中文术语兜底。

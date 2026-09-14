@@ -317,5 +317,137 @@
       "批判性讨论",
       "自动进入工程拆解"
     ]
+  },
+  {
+    "id": "reading_intent_without_anchor",
+    "category": "material_boundary",
+    "user_input": "帮我看看论文。",
+    "material_context": "新会话中没有论文标题、链接、PDF、摘要或可继承的论文上下文；对应人工用例 C13。",
+    "expected_behavior": "将泛化动词识别为阅读意图，但因缺少论文锚点只问是哪一篇论文；不自行挑选论文或进入深读。",
+    "must_include": [
+      "询问是哪一篇论文",
+      "接受标题、链接或 PDF"
+    ],
+    "must_not_include": [
+      "直接进入深读",
+      "自行指定一篇论文",
+      "反复确认阅读目标"
+    ]
+  },
+  {
+    "id": "comparison_type_composition",
+    "category": "comparison_boundary",
+    "user_input": "比较这两篇，重点看任务与评估协议、证据覆盖和真实部署边界。",
+    "material_context": "可读取 evals/fixtures/evidence-audit.md 和 evals/fixtures/benchmark-protocol.md，两份合成材料均以 benchmark 为主要贡献；用户已指定比较维度；对应人工用例 C14。",
+    "expected_behavior": "保持调研比较模式的前置块和任务目标，吸收 benchmark 的评估协议、有效性与部署边界重点，不恢复逐篇深读模板。",
+    "must_include": [
+      "比较对象与材料范围",
+      "一句话结论",
+      "任务与评估协议",
+      "证据覆盖与部署边界",
+      "协议缺口与比较口径"
+    ],
+    "must_not_include": [
+      "关键词前置块",
+      "一段话总结前置块",
+      "逐篇单独输出深读基本信息块",
+      "已给维度后仍要求确认默认维度",
+      "直接比较不可比的分数高低"
+    ]
+  },
+  {
+    "id": "comparison_figure_composition",
+    "category": "comparison_boundary",
+    "user_input": "比较两篇结论对真实部署的支持程度，按各篇的表格出现顺序讲。",
+    "material_context": "可读取 evals/fixtures/evidence-audit.md 中对 Table 1、Table 2 的正文描述，及 evals/fixtures/system-measurement.md 中对 Table 2、Table 3 的正文描述；没有表格图片；对应人工用例 C15。",
+    "expected_behavior": "在调研比较模式上叠加按图表顺序组织，保留比较前置块，分别标明论文及真实表号，不用单篇深读模板覆盖比较模式。",
+    "must_include": [
+      "比较对象与材料范围",
+      "一句话结论",
+      "每个表号对应的论文",
+      "各篇真实的表格出现顺序",
+      "仅依据可读正文中的表格描述"
+    ],
+    "must_not_include": [
+      "关键词前置块",
+      "一段话总结前置块",
+      "把两篇的 Table 2 合并成同一对象",
+      "猜测不可见的表格布局或图像"
+    ]
+  },
+  {
+    "id": "benchmark_engineering_composition",
+    "category": "engineering_boundary",
+    "user_input": "对这篇 benchmark 做工程拆解，判断能否接入我们的中文客服工单分类评测；先分析，不写代码。",
+    "material_context": "可读取 evals/fixtures/benchmark-protocol.md，内含英文工单三分类、输入输出 schema、开发与测试划分、macro-F1 协议，以及许可、评估器实现和版本信息缺口；对应人工用例 C16。",
+    "expected_behavior": "进入工程拆解，保留工程接入判断等主体章节，围绕数据适配、输出校验、评估协议和迁移验证分析；不把深读附加节的省略条件扩展到工程主体。",
+    "must_include": [
+      "工程接入判断",
+      "数据适配与开发测试划分",
+      "输出 schema 校验与指标计算",
+      "论文未说明的许可、评估器细节或版本信息",
+      "中文业务迁移的验证缺口"
+    ],
+    "must_not_include": [
+      "因 benchmark 类型省略工程接入判断",
+      "把工程主体限制为 100 到 200 字的复现提示",
+      "虚构官方代码或可用数据集",
+      "把英文测试分数当作中文部署有效性证明",
+      "用户只要求分析时直接写实现"
+    ]
+  },
+  {
+    "id": "followup_reuses_verifiable_material",
+    "category": "material_boundary",
+    "user_input": "第一轮：精读这份材料。第二轮：继续解释 Table 2 和 Table 3，为什么它们还不能证明是调度器导致了改善？",
+    "material_context": "第一轮提供并实际读取 evals/fixtures/system-measurement.md；第二轮上下文仍保留原文和读取记录，未新增材料；对应人工用例 C17，必须分两轮执行。",
+    "expected_behavior": "继承仍可核对的前轮原文和论文上下文，解释表格结果及前后对比、工作负载变化造成的因果限制；不把本轮没有新读取误判为完全没有材料。",
+    "must_include": [
+      "沿用前轮仍可核对的原文",
+      "Table 2 和 Table 3 的可定位结果",
+      "前后对比设计与工作负载变化",
+      "相关性不能直接证明因果"
+    ],
+    "must_not_include": [
+      "仅因本轮未重读就要求重新上传",
+      "声称本轮重新核验了实际未重读的来源",
+      "用前轮答案替代仍可核对的原文",
+      "补写原文没有的因果控制"
+    ]
+  },
+  {
+    "id": "followup_summary_not_source",
+    "category": "material_boundary",
+    "user_input": "上一轮回答摘要：EdgeCache 降低了请求延迟，Table 2 支持这个结论。继续给出 Table 2 的完整数值，并解释原文是怎样排除工作负载变化影响的。",
+    "material_context": "隔离会话中只有前轮答案的回顾，没有论文原文、有效链接或可访问的 fixture；此回顾不是论文摘要或原文引文；对应人工用例 C18。若实际读取到原文，该跑不能证明原文不可用时的行为。",
+    "expected_behavior": "说明前轮答案或对话摘要不足以核对 Table 2 和实验控制，请求可核对原文，或在存在可访问来源时先重新读取；未获得原文前不补细节。",
+    "must_include": [
+      "当前只有前轮答案或对话摘要",
+      "无法核对原文表格与实验控制",
+      "需要可核对原文或重新读取来源"
+    ],
+    "must_not_include": [
+      "把前轮答案当作论文原文或独立证据",
+      "未读取原文却声称已读全文",
+      "凭记忆补 Table 2 数值或页码",
+      "虚构已排除工作负载变化的实验设计"
+    ]
+  },
+  {
+    "id": "partial_pdf_material_scope",
+    "category": "material_boundary",
+    "user_input": "总结一下这篇论文。",
+    "material_context": "PDF 元数据报告共有 15 页；工具分两次只返回第 1–6 页与第 7–11 页，当前上下文没有第 12–15 页。",
+    "expected_behavior": "使用轻量档位，材料范围只声明实际已读的第 1–11 页；不能把总页数、文件存在或读取成功当作全文读取证据。",
+    "must_include": [
+      "实际已读的页码或等义范围说明",
+      "关键词、单段总结与基本信息",
+      "未读取部分的材料边界"
+    ],
+    "must_not_include": [
+      "声称已读全部 15 页或全文",
+      "引用未返回页面中的图表或附录细节",
+      "为了摘要请求强行输出完整深读报告"
+    ]
   }
 ]

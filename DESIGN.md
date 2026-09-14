@@ -42,16 +42,16 @@
 | Tier 2 | Custom GPT | ChatGPT 内的可复用 GPT 配置 | Compatible, derived from `prompts/chatgpt-project.md` |
 | Tier 2 | Hermes Agent | AgentSkills-compatible skill runtime | Compatible, not first-regression-tested |
 | Tier 2 | OpenClaw | AgentSkills-compatible skill runtime | Compatible, not first-regression-tested |
-| Not now | Cursor rules / IDE rules | 规则格式不同 | Not supported in v0.2 |
-| Not now | MCP server | 本项目不是 MCP server | Not supported in v0.2 |
-| Not now | Browser extension | 交互形态不同 | Not supported in v0.2 |
-| Not now | opencode | 未核验安装与触发语义 | Not supported in v0.2 |
+| Not now | Cursor rules / IDE rules | 规则格式不同 | Not supported |
+| Not now | MCP server | 本项目不是 MCP server | Not supported |
+| Not now | Browser extension | 交互形态不同 | Not supported |
+| Not now | opencode | 未核验安装与触发语义 | Not supported |
 
 兼容性的依据：
 
 - Agent Skill 形态只依赖 `SKILL.md`、YAML frontmatter 和 `references/` 渐进加载，不依赖平台专属 API；`agents/openai.yaml` 只提供可选 UI 元数据。
 - 当前 skill 没有脚本、外部工具调用或本地二进制依赖。
-- ChatGPT Skills beta、Hermes 和 OpenClaw 的兼容性基于公开格式与能力说明；本仓 v0.2 尚未对这些入口做首轮完整实机回归。
+- ChatGPT Skills beta、Hermes 和 OpenClaw 的兼容性基于公开格式与能力说明；本仓尚未对这些入口做首轮完整实机回归。
 
 一个运行时从 Compatible 升到 Primary，需要至少完成：
 
@@ -79,10 +79,12 @@ docs/release-v0.1.4.md
 docs/release-v0.2.0.md
 docs/release-v0.2.1.md
 docs/release-v0.3.0.md
+docs/release-v0.4.0.md
 docs/validation-2026-05-27.md
 docs/validation-2026-07-10-v0.2.0.md
 docs/validation-2026-07-19.md
 docs/validation-2026-08-15.md
+docs/validation-2026-09-15-v0.4.0.md
 docs/trigger-regression-cases.md
 .github/ISSUE_TEMPLATE/bug_report.yml
 .github/ISSUE_TEMPLATE/paper_misread.yml
@@ -99,6 +101,7 @@ evals/scenarios.json
 evals/fixtures/system-measurement.md
 evals/fixtures/theory-damaged-extraction.md
 evals/fixtures/evidence-audit.md
+evals/fixtures/benchmark-protocol.md
 scripts/check_rules.py
 ```
 
@@ -151,9 +154,11 @@ scripts/check_rules.py
 - 按图表顺序组织：按 Figure / Table / Equation / Algorithm 的出现顺序推进；优先架构图、主结果表、消融表、关键公式和算法。
 - 证据审计：把核心主张对到原文锚点、证据类型、支持强度依据和未覆盖问题；缺少证据不是反证。
 
+主模式决定前置块和任务目标，论文类型调整主体重点，子开关调整组织方式。比较叠加类型或按图表时，仍保留“比较对象与材料范围 + 一句话结论”；工程拆解的接入判断不受深读附加节“复现/应用提示”的省略条件限制。完整模式模板集中在 `references/modes.md`，主入口保留默认输出摘要和硬约束。
+
 ## Paper Types
 
-主模式回答“用户想怎么读”，论文类型回答“材料主要靠什么结构建立贡献和证据”。v0.2 支持：
+主模式回答“用户想怎么读”，论文类型回答“材料主要靠什么结构建立贡献和证据”。v0.2 起支持：
 
 - 标准方法 / 实验。
 - 系统 / 测量。
@@ -166,11 +171,12 @@ scripts/check_rules.py
 
 ## Material Scope
 
-- 消息含泛化阅读动词（看看、读读、瞅瞅、帮我看、了解一下）即视为有深读意图；只有纯锚点、零附言时才澄清一次。每个边界缺口最多澄清一次，材料退化确认与比较维度确认不计入澄清次数。
+- 已有论文锚点或可继承上下文时，泛化阅读动词（看看、读读、瞅瞅、帮我看、了解一下）补齐阅读意图；没有更具体目标时默认深读。没有具体论文时先问是哪篇，纯锚点、零附言时先问阅读目标。每个边界缺口最多澄清一次，材料退化确认与比较维度确认不计入澄清次数。
 - 只有标题、简称或模糊引用且检索到多个候选时，列出最可能的 2-3 个候选让用户确认；确认后不重复确认。
+- PDF 或全文的材料范围按工具实际返回的页码、章节或片段声明；文件存在、总页数或读取成功不代表全文已读，分段或截断返回只计实际可见部分。
 - 候选与用户上下文明显不一致时，说明不一致点，不进入深读。
-- 只能得到摘要时，写“仅基于摘要”，不进入完整深读；即使认出论文并记得其内容，本轮未实际读取全文时同样按仅有摘要处理。
-- 训练记忆不是可读材料：材料范围只能声明本轮实际读取的原文或用户实际提供的内容，不声称已读全文，不基于记忆补章节编号、图表、公式或实验数字。
+- 只能得到摘要时，写“仅基于摘要”，不进入完整深读；即使认出论文并记得其内容，当前上下文没有实际读取或用户提供的全文时同样按仅有摘要处理。
+- 训练记忆不是可读材料：材料范围只包含当前对话实际读取或用户提供、且在当前上下文仍可核对的材料。可以沿用前轮原文，上一轮回答或对话摘要不能代替缺失原文；需要的原文已不可核对时重新读取或说明缺口，不基于记忆补章节编号、图表、公式或实验数字。
 
 ## Evidence Rules
 
@@ -204,7 +210,7 @@ Web prompt 版本和 Agent Skill 版本共享同一套阅读规则，但能力�
 |---|---|---|---|---|
 | 适用领域边界 | 完整 | 完整 | 完整 | 三入口均优先服务 CS / AI / ML，非 CS 不强制 CCF 或工程建议。 |
 | 触发边界与澄清 | 完整 | 精简 | 精简 | Web 保留单次澄清与不触发场景。 |
-| 材料范围（含标题-only 兜底） | 完整 | 完整 | 完整 | 三入口均要求无可信材料时退出深读，不用猜测或训练记忆补内容。 |
+| 材料范围（含标题-only 兜底） | 完整 | 完整 | 完整 | 三入口均按实际返回页码或片段声明材料；无可信材料时退出深读，不用猜测或训练记忆补内容。 |
 | 外部事实核验路径 | 完整 | 完整 | 完整 | 三入口均列出核验来源与证据标签。 |
 | 实验数字锚点 | 完整 | 完整 | 完整 | 三入口均要求定位到原文锚点。 |
 | 高影响产业声明四级标注 | 完整 | 精简 | 精简 | Web 保留四级标签、自检与不得写成独立证明的边界。 |
@@ -215,14 +221,15 @@ Web prompt 版本和 Agent Skill 版本共享同一套阅读规则，但能力�
 | 数学表达规则 | 完整 | 完整 | 完整 | 三入口均解释核心符号并限制纯叙述段堆叠 LaTeX。 |
 | 术语规则 | 完整 | 完整 | 完整 | 三入口均支持最多 5 个主线必需词条的短术语表。 |
 | 批判性四层 | 完整 | 完整 | 完整 | Web 将证据支持写为实验或形式证据支持。 |
-| 多轮追问继承 | 完整 | 完整 | 完整 | 三入口均继承论文上下文、术语表、模式、论文类型和子开关。 |
+| 多轮追问继承 | 完整 | 完整 | 完整 | 三入口均继承仍可核对的已读材料及阅读上下文；上轮回答或对话摘要不能代替原文。 |
 | 输出前自检 | 完整 | 完整 | 完整 | 三入口均覆盖材料、类型、证据、数学、术语、风格和章节权重。 |
 | 硬约束（字数 / 关键词 / 基本信息） | 完整 | 完整 | 完整 | 三入口的数字与字段限制一致。 |
 | 调研比较表骨架 | 完整 | 精简 | 精简 | Web 保留默认列和表后解释要求，不内联 Markdown 表格。 |
 | 只有论文锚点时不先做预检 | 完整 | 裁剪 | 裁剪 | Agent 专属；Web 无预检工具链，不适用。 |
 | 总结 / 解读轻量档位 | 完整 | 完整 | 完整 | 三入口触发词（总结、解读、概览、TL;DR）与轻量档位规则一致；不豁免材料范围说明。 |
 | 产物型请求分流 | 完整 | 裁剪 | 裁剪 | Agent 专属；Web 无编码流程，不适用。 |
-| 泛化阅读动词判定 | 完整 | 完整 | 完整 | 三入口判定顺序一致：先查泛化动词，纯锚点零附言才澄清一次。 |
+| 泛化阅读动词判定 | 完整 | 完整 | 完整 | 三入口均要求已有论文锚点或可继承上下文；没有论文时问哪篇，明确的工程、比较等要求优先。 |
+| 模式、类型与子开关组合 | 完整 | 完整 | 完整 | 主模式决定前置块，类型调整主体重点，子开关调整组织；深读附加节的省略条件不限制工程拆解主体。 |
 
 ## Documentation Style
 
@@ -246,10 +253,10 @@ v0.1 包含以下规则增强，已落到 `SKILL.md`、`references/modes.md` 和
 
 | ID | 要求 | 落点 |
 |---|---|---|
-| P0-1 | 外部事实核验路径具体化 | `SKILL.md` 执行流程步骤 6；Evidence Rules |
-| P0-2 | 调研比较先确认维度 | `references/modes.md` 比较维度确认；`SKILL.md` 步骤 7 |
+| P0-1 | 外部事实核验路径具体化 | `SKILL.md` 外部事实核验；Evidence Rules |
+| P0-2 | 调研比较先确认维度 | `references/modes.md` 比较维度确认；`SKILL.md` 调研比较流程 |
 | P0-3 | 跨论文口径审计 | `SKILL.md` 证据规则；`references/modes.md` 比较规则 |
-| P1-1 | 模糊候选确认 | `SKILL.md` 材料范围步骤 3 |
+| P1-1 | 模糊候选确认 | `SKILL.md` 可读材料范围 |
 | P1-2 | 公式-代码对齐 | `references/modes.md` 工程拆解模式；`SKILL.md` 证据规则 |
 | P1-3 | 比较表最小列固定 | `references/modes.md` 紧凑比较表 |
 
@@ -257,7 +264,7 @@ v0.1 包含以下规则增强，已落到 `SKILL.md`、`references/modes.md` 和
 
 | ID | 要求 | 落点 |
 |---|---|---|
-| V2-1 | 按主要贡献与证据结构选择论文类型 | `SKILL.md` 步骤 4；`references/paper-types.md` |
+| V2-1 | 按主要贡献与证据结构选择论文类型 | `SKILL.md` 论文类型判断；`references/paper-types.md` |
 | V2-2 | 系统、benchmark、理论、综述等使用不同主体骨架 | `references/paper-types.md`；两份 Web prompt |
 | V2-3 | 证据审计可与主模式和论文类型叠加 | `references/modes.md`；两份 Web prompt |
 | V2-4 | 三入口核心规则漂移检查与 CI 门禁 | `scripts/check_rules.py`；`.github/workflows/validate.yml` |
@@ -276,12 +283,13 @@ v0.1 包含以下规则增强，已落到 `SKILL.md`、`references/modes.md` 和
 当前状态：
 
 - Skill 文件格式已通过 AgentSkills 风格的 frontmatter、名称和描述校验；OpenAI UI 元数据按当前字段约束生成并通过本仓校验。
-- 仓库根目录提供 `scripts/check_rules.py`，用 Python 标准库检查必要文件、触发描述、reference 链接、UI 元数据、18 个场景、三入口关键规则和 Web prompt 自包含性；GitHub Actions 在 push / PR 时自动运行。
+- 仓库根目录提供 `scripts/check_rules.py`，用 Python 标准库检查必要文件、触发描述、reference 链接、UI 元数据、25 个声明式场景、三入口关键规则和 Web prompt 自包含性；GitHub Actions 在 push / PR 时自动运行。静态检查只核对文件与规则文本，不等同于模型行为实测。
 - 已用三份可复现合成 fixture 做隔离前向测试：系统 / 测量与证据审计完整通过；理论 / 证明输出正确拒绝重构损坏公式，但调用结束状态受外部会话额度影响，记录见 `docs/validation-2026-07-10-v0.2.0.md`。
 - 已用一篇真实 16 页 PDF 完成文本层最小验证，覆盖材料范围、观点 / 路线图论文变体、数字锚点、公式抽取乱码边界和未核验外部事实标签；记录见 `docs/validation-2026-05-27.md`。
 - v0.1.2 仅调整数学表达默认写法，未引入新的阅读模式或证据规则变更，不需要额外端到端验证。
 - v0.1.4 修复「输出前自检」与正文相互矛盾的措辞，是把规则对齐到 v0.1.2 已发布意图，不引入新的阅读或证据行为，同样不需要额外端到端验证。
 - v0.3.0 的触发边界与输出契约改动已在 Codex（`codex exec`，`gpt-daybreak-blue-latest`）上完成 12 个固化用例的首轮实机回归：11 个通过；1 个「超知名论文触发训练记忆冒充已读材料」场景经两轮规则修正仍复现，记为模型层已知限制，附合成摘要对照记录，见 `docs/validation-2026-08-15.md`。用例清单固化于 `docs/trigger-regression-cases.md`。
+- v0.4.0 首轮在 Codex、Claude Code 上均完成 C1–C18 及 C9S 对照；Claude 首轮暴露的 PDF 范围过度声明和产物意图漏加载已修正并复测。最终版完成 Codex 11/18、Claude Code 8/18 个主用例，其余受额度限制而未验证；部分输出仍有格式偏差。两轮快照与结果分别记录于 `docs/validation-2026-09-15-v0.4.0.md`，没有合并宣称最终版全量通过。
 - 尚未完成 Claude Project、ChatGPT Project、Codex、Claude Code 四个平台的完整端到端回归测试。
 
 因此公开文案只写“Primary”或“Compatible”，不写“fully tested across all platforms”。

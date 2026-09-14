@@ -23,6 +23,7 @@ REQUIRED_FILES = [
     "evals/fixtures/system-measurement.md",
     "evals/fixtures/theory-damaged-extraction.md",
     "evals/fixtures/evidence-audit.md",
+    "evals/fixtures/benchmark-protocol.md",
     "scripts/check_rules.py",
     ".github/workflows/validate.yml",
 ]
@@ -127,22 +128,20 @@ def check_frontmatter() -> tuple[bool, str]:
         return False, f"description exceeds the 1024-character limit ({len(description)} chars)"
 
     required_terms = [
-        "中文论文精读工作流",
-        "Use when",
-        "paper anchor",
+        "中文论文深读",
         "PDF",
-        "deep-reading request",
-        "summary/TL;DR",
-        "evidence audit",
-        "no stated request yet",
-        "clarify once",
-        "has not named the paper",
-        "ask once which paper",
-        "Do not use",
-        "plain translation",
-        "single-term definitions",
+        "总结/TL;DR",
+        "按论文实现/复现",
+        "证据审计",
+        "只有论文锚点",
+        "澄清阅读目标",
+        "只有阅读意图",
+        "问哪篇",
+        "不用于",
+        "仅翻译",
+        "单个术语",
         "BibTeX",
-        "finding/downloading a paper",
+        "找或下载论文",
     ]
     missing_terms = [term for term in required_terms if term not in description]
     if missing_terms:
@@ -225,8 +224,8 @@ def load_scenarios() -> list[dict[str, object]]:
 
 def check_scenarios() -> tuple[bool, str]:
     scenarios = load_scenarios()
-    if not 12 <= len(scenarios) <= 20:
-        return False, f"scenario count must be 12-20 (found {len(scenarios)})"
+    if len(scenarios) < 12:
+        return False, f"at least 12 scenarios are required (found {len(scenarios)})"
 
     ids: list[str] = []
     for index, scenario in enumerate(scenarios):
