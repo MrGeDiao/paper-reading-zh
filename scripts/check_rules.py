@@ -17,9 +17,9 @@ REQUIRED_FILES = [
     "paper-reading-zh/references/modes.md",
     "paper-reading-zh/references/paper-types.md",
     "paper-reading-zh/agents/openai.yaml",
-    "prompts/claude-project.md",
-    "prompts/chatgpt-project.md",
+    "prompts/project-instructions.md",
     "evals/scenarios.json",
+    "evals/trigger-cases.md",
     "evals/fixtures/system-measurement.md",
     "evals/fixtures/theory-damaged-extraction.md",
     "evals/fixtures/evidence-audit.md",
@@ -30,9 +30,13 @@ REQUIRED_FILES = [
 
 ENTRY_FILES = {
     "Agent Skill": ROOT / "paper-reading-zh/SKILL.md",
-    "Claude Project": ROOT / "prompts/claude-project.md",
-    "ChatGPT Project": ROOT / "prompts/chatgpt-project.md",
+    "Web Project": ROOT / "prompts/project-instructions.md",
 }
+
+WEB_PROMPT = "prompts/project-instructions.md"
+WEB_PROMPT_CHAR_LIMIT = 8000
+
+LINK_PATTERN = re.compile(r"\]\((?!https?://|mailto:|#)([^)\s]+)\)")
 
 SCENARIO_FIELDS = {
     "id",
@@ -350,19 +354,41 @@ def check_web_prompts_are_self_contained() -> tuple[bool, str]:
         "### 证据审计",
     ]
     problems: list[str] = []
-    for relative_path in ["prompts/claude-project.md", "prompts/chatgpt-project.md"]:
-        text = read_text(relative_path)
-        if "references/" in text:
-            problems.append(f"{relative_path} depends on references/")
-        missing = [heading for heading in required_headings if heading not in text]
-        if missing:
-            problems.append(f"{relative_path} missing {', '.join(missing)}")
-        if "| 核心主张 | 原文锚点 | 证据类型 | 支持强度（含依据） | 未覆盖问题 |" not in text:
-            problems.append(f"{relative_path} missing evidence audit skeleton")
+    text = read_text(WEB_PROMPT)
+    if "references/" in text:
+        problems.append(f"{WEB_PROMPT} depends on references/")
+    missing = [heading for heading in required_headings if heading not in text]
+    if missing:
+        problems.append(f"{WEB_PROMPT} missing {', '.join(missing)}")
+    if "| 核心主张 | 原文锚点 | 证据类型 | 支持强度（含依据） | 未覆盖问题 |" not in text:
+        problems.append(f"{WEB_PROMPT} missing evidence audit skeleton")
+    if len(text) > WEB_PROMPT_CHAR_LIMIT:
+        problems.append(
+            f"{WEB_PROMPT} has {len(text)} characters (limit {WEB_PROMPT_CHAR_LIMIT})"
+        )
 
     if problems:
         return False, "; ".join(problems)
-    return True, "both Web prompts inline type and evidence-audit rules"
+    return True, f"Web prompt inlines type and audit rules ({len(text)} characters)"
+
+
+def check_markdown_links() -> tuple[bool, str]:
+    broken: list[str] = []
+    checked = 0
+    for path in sorted(ROOT.rglob("*.md")):
+        relative = path.relative_to(ROOT)
+        if relative.parts[0] in {".git", "tasks"} or relative.parts[:2] == ("docs", "validation"):
+            continue
+        for target in LINK_PATTERN.findall(path.read_text(encoding="utf-8")):
+            file_part = target.split("#", 1)[0]
+            if not file_part:
+                continue
+            checked += 1
+            if not (path.parent / file_part).exists():
+                broken.append(f"{relative} -> {target}")
+    if broken:
+        return False, "broken: " + ", ".join(broken)
+    return True, f"{checked} relative links resolve"
 
 
 def main() -> int:
@@ -372,8 +398,9 @@ def main() -> int:
     run_check("OpenAI UI metadata", check_openai_yaml)
     run_check("scenario JSON", check_scenarios)
     run_check("paper type reference", check_paper_types_reference)
-    run_check("three-entry shared behavior", check_shared_entry_rules)
+    run_check("shared entry behavior", check_shared_entry_rules)
     run_check("Web prompt self-containment", check_web_prompts_are_self_contained)
+    run_check("relative Markdown links", check_markdown_links)
 
     if failures:
         print(f"\nFAIL: {len(failures)} of {check_count} checks failed.")

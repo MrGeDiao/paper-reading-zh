@@ -1,26 +1,25 @@
-# Web Prompt Kit
+# 网页端使用
 
-这个目录给不使用 CLI/Agent 的读者准备。把对应文件粘贴到 Claude Project 或 ChatGPT Project 的 instructions，再上传论文 PDF 或粘贴论文链接即可。
+不用 CLI 的话，用 [`project-instructions.md`](./project-instructions.md) 这一份就够了，Claude Project 和 ChatGPT Project 通用。
 
-| 文件 | 用途 |
-|---|---|
-| `claude-project.md` | Claude Project instructions |
-| `chatgpt-project.md` | ChatGPT Project instructions；文末包含 Custom GPT 补充说明 |
+## Claude Project / ChatGPT Project
 
-Custom GPT 用法见 `chatgpt-project.md` 文末；项目不单独维护一份 GPT 专用 prompt。
+1. 新建 Project。
+2. 把 `project-instructions.md` 的全文粘贴到 Project instructions。
+3. 上传论文 PDF，或者粘贴链接、标题、摘要，然后提问，例如 `精读这篇论文`、`从工程复现角度拆一下`、`比较这几篇论文`。
 
-这些文件不是 AgentSkills 自动触发文件。它们不会调用本地工具，也不会自动读取 `paper-reading-zh/references/modes.md` 或 `paper-reading-zh/references/paper-types.md`；必要规则和类型骨架已经展开在 prompt 内。
+这份 instructions 不到 8000 字符，模式模板和论文类型骨架都已写在文件里，不需要另外上传 reference 文件。
 
-Web 版和 Agent Skill 版共享同一套证据边界：
+## 和 Agent Skill 的区别
 
-- 只基于可读材料回答。
-- 只能得到摘要时，必须写“仅基于摘要”。
-- 未核验外部事实写“未核验”，找过但没找到写“未找到”。
-- 能联网时，按优先级核验 arXiv、OpenReview / ACM / IEEE、Hugging Face Papers、Semantic Scholar / DBLP 等。
-- 跨论文 / 跨模型比较时，检查口径一致性；不一致时标注“口径不完全可比”或“口径未核验”。
-- 论文未说明的实现细节写“论文未说明”。
-- 看不到图表视觉内容时，不描述图表元素、坐标、曲线或趋势。
-- 系统、benchmark、理论、综述和路线图等按主要贡献与证据结构选择类型，不硬套标准算法论文骨架。
-- 证据审计输出核心主张、原文锚点、证据类型、支持强度依据和未覆盖问题；缺少证据不是反证。
+网页版和 `paper-reading-zh/` 里的 Agent Skill 用的是同一套证据规则，有三处差异：
 
-如果要修改这些 prompt，请同步检查 `paper-reading-zh/SKILL.md`、`paper-reading-zh/references/modes.md` 和 `paper-reading-zh/references/paper-types.md`，并运行 `python3 scripts/check_rules.py`，避免 Web 版和 Agent 版行为漂移。
+- 网页版不能调用本地工具。能不能联网核验 venue 和代码链接，能不能看到 PDF 里的图表，取决于所用平台；做不到时，规则要求先说明限制。
+- 网页版没有“直接写代码”的分流，也没有触发前的预检，因为网页端没有编码流程和预检工具。
+- 网页版是精简改写：约束都保留，部分细则省略。逐项取舍见 [DESIGN.md](../DESIGN.md#web-版裁剪项)。
+
+想用完整规则，可以把 `paper-reading-zh/SKILL.md`、`references/modes.md`、`references/paper-types.md` 三个文件上传到 Project files，再在 instructions 里写一句：`按项目文件 SKILL.md 的规则读论文，需要模板时查 modes.md 和 paper-types.md。` 这种用法还没在网页端实测过。
+
+## 修改这份 prompt
+
+改规则时，Agent Skill 和这份 prompt 要一起改，然后运行 `python3 scripts/check_rules.py`。脚本会检查两边的关键规则是否一致，以及 prompt 是否超过 8000 字符。
