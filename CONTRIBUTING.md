@@ -8,19 +8,18 @@
 - 补充真实论文验证案例，尤其是摘要-only、PDF 图表不可读、标题模糊、多论文比较等边界场景。
 - 补充系统 / 测量、数据集 / benchmark、理论 / 证明、综述 / 立场等类型识别案例。
 - 改进证据审计的主张选择、锚点、支持强度或未覆盖问题规则。
-- 改进 Web Prompt Kit 和 Agent Skill 的一致性。
+- 改进网页版和 Agent Skill 的一致性。
 - 报告某篇论文被读错、venue/代码链接被编造、图表或实验数字被错误引用的案例。
 
 ## 修改规则时的同步要求
 
-本仓有两个入口：Agent Skill 和 Web Prompt Kit。改其中一边时，请同步检查另一边。
+规则以 `paper-reading-zh/SKILL.md` 为准，网页版是它的精简改写。改其中一边时，请同步检查另一边：
 
 - Agent Skill：`paper-reading-zh/SKILL.md`、`paper-reading-zh/references/modes.md`、`paper-reading-zh/references/paper-types.md`
-- Web Prompt Kit：`prompts/claude-project.md`、`prompts/chatgpt-project.md`
-- 回归与漂移检查：`evals/scenarios.json`、`evals/fixtures/`、`scripts/check_rules.py`
-- 设计事实源：`DESIGN.md`
+- 网页版：`prompts/project-instructions.md`（不超过 8000 字符）
+- 回归与检查：`evals/scenarios.json`、`evals/trigger-cases.md`、`evals/fixtures/`、`scripts/check_rules.py`
 
-同步状态以 `DESIGN.md` 的 Rule Sync Matrix 为准，改规则的 PR 需更新对应行。
+网页版有意不收的规则记在 `DESIGN.md` 的「Web 版裁剪项」，新增或取消裁剪时更新那张表。
 
 如果只改 README 或维护文件，说明不影响运行规则即可。
 
@@ -38,7 +37,7 @@
 
 PR 里请说明：
 
-- 改了哪个入口：Agent Skill、Web Prompt Kit、文档，或三者都有。
+- 改了哪个入口：Agent Skill、网页版、文档，或几者都有。
 - 影响哪个模式、论文类型或子开关：深读、工程拆解、调研比较、论文类型自适应、按图表顺序、证据审计，或仅维护文档。
 - 用什么论文或场景做过验证；如果没有验证，请直说原因。
 

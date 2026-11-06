@@ -8,7 +8,7 @@
 - [ ] Agent Skill reference: `paper-reading-zh/references/modes.md`
 - [ ] Agent Skill paper types: `paper-reading-zh/references/paper-types.md`
 - [ ] OpenAI UI metadata: `paper-reading-zh/agents/openai.yaml`
-- [ ] Web Prompt Kit: `prompts/claude-project.md` / `prompts/chatgpt-project.md`
+- [ ] Web prompt: `prompts/project-instructions.md`
 - [ ] Regression/evals: `evals/` / `scripts/check_rules.py`
 - [ ] README / DESIGN / 维护文档
 
@@ -25,8 +25,8 @@
 ## 验证
 
 - [ ] 我用真实论文或最小案例验证过
-- [ ] 我检查了 Agent Skill 和 Web Prompt Kit 没有漂移
-- [ ] 已核对 DESIGN.md Rule Sync Matrix 受影响行
+- [ ] 我检查了 Agent Skill 和网页版没有漂移
+- [ ] 如有新增或取消的网页版裁剪项，已更新 DESIGN.md「Web 版裁剪项」
 - [ ] 我运行了 `python3 scripts/check_rules.py`
 - [ ] 我没有扩大平台兼容承诺
 - [ ] 我保留了“未核验”“未找到”“摘要中提到”“论文未说明”等证据标签
